@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Book a Table</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav>
+    <a href="book.html">Book Table</a> |
+    <a href="login.html">Admin Login</a> |
+    <a href="menu.html">Menu (Admin)</a> |
+    <a href="staff.html">Staff</a> |
+    <a href="reservations.html">Reservations (Admin)</a>
+  </nav>
+
+  <div id="notification" class="hidden"></div>
+  <h1>Book a Table</h1>
+
+  <!-- everybody sees this -->
+  <form id="bookForm" novalidate>
+    <div class="form-group">
+      <label for="book-name">Name</label>
+      <input id="book-name" name="name" placeholder="Your Name" required />
+      <div class="error-message" data-for="book-name"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="book-email">Email</label>
+      <input id="book-email" name="email" type="email" placeholder="Your Email" required />
+      <div class="error-message" data-for="book-email"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="book-phone">Phone</label>
+      <input id="book-phone" name="phone" placeholder="Your Phone" required />
+      <div class="error-message" data-for="book-phone"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="book-date">Date</label>
+      <input id="book-date" name="date" type="date" required />
+      <div class="error-message" data-for="book-date"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="book-time">Time</label>
+      <input id="book-time" name="time" type="time" required />
+      <div class="error-message" data-for="book-time"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="book-partySize">Party Size</label>
+      <input id="book-partySize" name="partySize" type="number" placeholder="Party Size" required />
+      <div class="error-message" data-for="book-partySize"></div>
+    </div>
+
+    <button type="submit">Reserve</button>
+  </form>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/book.js"></script>
+
+  <script type="module">
+    import { getUserRole } from './js/api.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = getUserRole();
+      if (role !== 'admin') {
+        document.querySelectorAll(
+          'nav a[href="menu.html"], nav a[href="staff.html"], nav a[href="reservations.html"]'
+        ).forEach(el => el.style.display = 'none');
+      }
+    });
+  </script>
+</body>
+</html>

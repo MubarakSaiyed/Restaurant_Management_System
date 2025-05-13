@@ -1,0 +1,203 @@
+/* Reset & base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    color: #333;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  
+  /* Navigation bar */
+  nav {
+    background: #f5f5f5;
+    padding: 0.5em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  nav a, nav button { color: #1976d2; text-decoration: none; background: none; }
+    
+  nav {
+    margin-bottom: 20px;
+  }
+  nav a,
+  nav button {
+    display: inline-block;
+    margin-right: 12px;
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  nav button:hover,
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Headings */
+  h1 {
+    margin-bottom: 16px;
+    font-size: 2rem;
+    color: #222;
+  }
+  h2 {
+    margin-top: 16px;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    color: #444;
+  }
+  
+  /* Forms */
+  form {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    max-width: 400px;
+    margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 1rem; }
+  .error-message {
+    color: #e53935;
+    font-size: 0.875rem;
+    height: 1em;
+    margin-top: 0.25rem;
+}
+
+  form input,
+  form select,
+  form button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  form button {
+    background: #0066cc;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+  }
+  form button:hover {
+    background: #005bb5;
+  }
+  
+  /* Lists (menu) */
+  ul#menuList {
+    list-style: none;
+    padding: 0;
+    max-width: 600px;
+  }
+  ul#menuList li {
+    background: #fff;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  ul#menuList li span {
+    flex-grow: 1;
+  }
+  ul#menuList li button {
+    margin-left: 8px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  
+  /* Tables (reservations) */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 16px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background: #f2f2f2;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 600px) {
+    form, ul#menuList, table {
+      width: 100%;
+    }
+    ul#menuList li {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    ul#menuList li button {
+      margin: 8px 4px 0 0;
+    }
+  }
+
+/* Notification banner */
+#notification {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+  }
+  
+  /* Base notification styling */
+  .notification {
+    margin: 0.5rem 0;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    color: white;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(-1rem);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  /* Slide/fade in */
+  .notification.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Types */
+  .notification.info    { background: #2f86eb; }
+  .notification.success { background: #28a745; }
+  .notification.warn    { background: #ffc107; color: #333; }
+  .notification.error   { background: #dc3545; }
+  
+
+  button.loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  button {
+    padding: 0.5em 1em;
+    border: none; border-radius: 4px;
+  }
+  button:hover { opacity: 0.9; }
+  button + button { margin-left: 0.5em; }
+  ul#menuList li {
+    list-style: none;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  ul#menuList li span { flex: 1; }
+  
+  

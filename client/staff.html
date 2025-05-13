@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Staff Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav>
+    <a href="menu.html">Menu</a> |
+    <a href="reservations.html">Reservations</a> |
+    <a href="book.html">Book Table</a> |
+    <a href="staff.html">Staff</a> |
+    <button id="logoutBtn">Log Out</button>
+  </nav>
+
+  <div id="notification" class="hidden"></div>
+  <h1>Staff Management</h1>
+
+  <!-- admin-only -->
+  <div id="adminUI">
+    <form id="staffForm" novalidate>
+      <h2>Add / Edit Staff</h2>
+
+      <div class="form-group">
+        <label for="staff-name">Name</label>
+        <input id="staff-name" name="name" type="text" required />
+        <div class="error-message" data-for="staff-name"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="staff-role">Role</label>
+        <input id="staff-role" name="role" type="text" required />
+        <div class="error-message" data-for="staff-role"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="staff-shiftStart">Shift Start</label>
+        <input id="staff-shiftStart" name="shiftStart" type="time" required />
+        <div class="error-message" data-for="staff-shiftStart"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="staff-shiftEnd">Shift End</label>
+        <input id="staff-shiftEnd" name="shiftEnd" type="time" required />
+        <div class="error-message" data-for="staff-shiftEnd"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="staff-wage">Wage</label>
+        <input id="staff-wage" name="wage" type="number" step="0.01" required />
+        <div class="error-message" data-for="staff-wage"></div>
+      </div>
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <ul id="staffList"></ul>
+
+  <!-- modules -->
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/staff.js"></script>
+
+  <script type="module">
+    import { getUserRole } from './js/api.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = getUserRole();
+      if (role !== 'admin') {
+        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
+        document.getElementById('adminUI').style.display = 'none';
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('role');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>

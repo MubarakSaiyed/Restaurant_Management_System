@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Reservations</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav>
+    <a href="menu.html">Menu</a> |
+    <a href="reservations.html">Reservations</a> |
+    <a href="book.html">Book Table</a> |
+    <a href="staff.html">Staff</a> |
+    <button id="logoutBtn">Log Out</button>
+  </nav>
+
+  <div id="notification" class="hidden"></div>
+  <h1>All Reservations</h1>
+
+  <!-- admin-only -->
+  <div id="adminUI">
+    <form id="resForm" novalidate>
+      <div class="form-group">
+        <label for="allres-name">Name</label>
+        <input id="allres-name" name="name" placeholder="Your Name" required />
+        <div class="error-message" data-for="allres-name"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="allres-email">Email</label>
+        <input id="allres-email" type="email" name="email" placeholder="Your Email" required />
+        <div class="error-message" data-for="allres-email"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="allres-phone">Phone</label>
+        <input id="allres-phone" name="phone" placeholder="Your Phone" required />
+        <div class="error-message" data-for="allres-phone"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="allres-date">Date</label>
+        <input id="allres-date" type="date" name="date" required />
+        <div class="error-message" data-for="allres-date"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="allres-time">Time</label>
+        <input id="allres-time" type="time" name="time" required />
+        <div class="error-message" data-for="allres-time"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="allres-partySize">Party Size</label>
+        <input id="allres-partySize" name="partySize" type="number" placeholder="Party Size" required />
+        <div class="error-message" data-for="allres-partySize"></div>
+      </div>
+
+      <button type="submit">Reserve</button>
+    </form>
+  </div>
+
+  <table id="reservationsTable" border="1">
+    <thead>
+      <tr>
+        <th>Name</th><th>Email</th><th>Phone</th>
+        <th>Date</th><th>Time</th><th>Party Size</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/reservations.js"></script>
+
+  <script type="module">
+    import { getUserRole } from './js/api.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = getUserRole();
+      if (role !== 'admin') {
+        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
+        document.getElementById('adminUI').style.display = 'none';
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('role');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>

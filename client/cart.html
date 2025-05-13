@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Place Order</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav>
+    <a href="menu.html">Menu</a> |
+    <a href="cart.html">Cart</a> |
+    <a href="myOrders.html">My Orders</a> |
+    <button id="logoutBtn">Log Out</button>
+  </nav>
+
+  <h1>Browse & Add to Cart</h1>
+  <ul id="menuCatalog"></ul>
+
+  <h2>Your Cart</h2>
+  <ul id="cartList"></ul>
+  <button id="placeOrderBtn">Place Order</button>
+
+  <div id="notification" class="hidden"></div>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('role');
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>

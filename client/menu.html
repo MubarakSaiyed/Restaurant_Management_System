@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menu</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav>
+    <a href="menu.html">Menu</a> |
+    <a href="reservations.html">Reservations</a> |
+    <a href="book.html">Book Table</a> |
+    <a href="staff.html">Staff</a> |
+    <button id="logoutBtn">Log Out</button>
+  </nav>
+
+  <div id="notification" class="hidden"></div>
+  <h1>Menu</h1>
+
+  <!-- only admins will ever see this -->
+  <div id="adminUI">
+    <form id="addForm" novalidate>
+      <h2>Add New Dish</h2>
+
+      <div class="form-group">
+        <label for="dish-name">Name</label>
+        <input id="dish-name" name="name" placeholder="Name" required />
+        <div class="error-message" data-for="dish-name"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="dish-category">Category</label>
+        <input id="dish-category" name="category" placeholder="Category" required />
+        <div class="error-message" data-for="dish-category"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="dish-price">Price</label>
+        <input id="dish-price" name="price" type="number" placeholder="Price" required />
+        <div class="error-message" data-for="dish-price"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="dish-desc">Description</label>
+        <input id="dish-desc" name="description" placeholder="Description" />
+        <div class="error-message" data-for="dish-desc"></div>
+      </div>
+
+      <label>
+        <input name="available" type="checkbox" checked /> Available
+      </label>
+
+      <button type="submit">Add Dish</button>
+    </form>
+  </div>
+
+  <ul id="menuList"></ul>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/menu.js"></script>
+  <script type="module">
+    import { getUserRole } from './js/api.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = getUserRole();
+
+      // hide admin parts for non-admins
+      if (role !== 'admin') {
+        document.getElementById('adminUI').style.display = 'none';
+        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
+        document.querySelector('nav a[href="reservations.html"]').style.display = 'none';
+      }
+
+      // wire up logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('role');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>

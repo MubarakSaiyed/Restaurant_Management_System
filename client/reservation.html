@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Table Reservation</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="book.html">Book Table</a> |
+    <a href="login.html">Admin Login</a> |
+    <a href="menu.html">Menu</a> |
+    <a href="staff.html">Staff</a> |
+    <a href="reservations.html">All Reservations</a>
+  </nav>
+
+  <div id="notification" class="hidden"></div>
+  <h1>Make a Reservation</h1>
+
+  <form id="reservationForm" novalidate>
+    <!-- your form-group blocks -->
+    … your fields …
+    <button type="submit">Book Table</button>
+  </form>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/reservation.js"></script>
+
+  <script type="module">
+    import { getUserRole } from './js/api.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = getUserRole();
+      if (role !== 'admin') {
+        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
+        document.querySelector('nav a[href="reservations.html"]').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
