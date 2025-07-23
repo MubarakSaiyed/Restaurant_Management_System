@@ -1,0 +1,183 @@
+/* reservation.css */
+/* must come *after* style.css in your HTML */
+
+:root {
+    --res-bg-image:    url('../images/Sitting.jpg');
+    --res-overlay:     rgba(0,0,0,0.45);
+    --res-card-bg:     rgba(255, 255, 255, 0.15);
+    --res-blur:        blur(12px);
+    --res-radius:      16px;
+    --res-shadow:      0 8px 32px rgba(0,0,0,0.25);
+    --res-hover-sh:    0 16px 64px rgba(0,0,0,0.35);
+    --res-glow:        rgba(26,115,232,0.25);
+    --res-brand:       #b68056;
+    --res-transition:  0.3s ease;
+  }
+  
+  /* Full-screen blurred background + overlay */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      linear-gradient(var(--res-overlay), var(--res-overlay)),
+      var(--res-bg-image) center/cover no-repeat fixed;
+    position: relative;
+    z-index: 0;
+  }
+  
+  /* Center hero & form card */
+  main.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height: calc(100vh - 70px);
+    padding: 2rem;
+    gap: 2rem;
+  }
+  
+  /* Hero text animation */
+  .hero-text {
+    max-width: 360px;
+    color: #fff;
+    animation: fadeInUp 0.6s var(--res-transition) both;
+    text-align: center;
+  }
+  .hero-text h1 {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+  .hero-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+  
+  /* Fade-in keyframe */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Glass reservation card */
+  .add-card {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    padding: 2rem 1.5rem;
+    border-radius: var(--res-radius);
+    background: var(--res-card-bg);
+    backdrop-filter: var(--res-blur);
+    -webkit-backdrop-filter: var(--res-blur);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: var(--res-shadow);
+    transition:
+      transform var(--res-transition),
+      box-shadow var(--res-transition),
+      border-color var(--res-transition);
+    animation: fadeInUp 0.6s var(--res-transition) both;
+    z-index: 1;
+  }
+  
+  /* Pop-up on hover & focus */
+  .add-card:hover,
+  .add-card:focus-within {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+      var(--res-hover-sh),
+      0 0 20px var(--res-glow);
+    border-color: var(--res-brand);
+  }
+  
+  /* Neumorphic inputs */
+  .add-card .form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    box-shadow:
+      inset 4px 4px 8px rgba(0,0,0,0.2),
+      inset -4px -4px 8px rgba(255,255,255,0.7);
+    transition: box-shadow var(--res-transition);
+  }
+  .add-card .form-group input:focus {
+    outline: none;
+    box-shadow:
+      inset 4px 4px 12px rgba(0,0,0,0.3),
+      inset -4px -4px 12px rgba(255,255,255,0.9);
+  }
+  
+  /* Button glow */
+  .add-card .btn-primary {
+    width: 100%;
+    padding: 0.85rem;
+    border: none;
+    border-radius: var(--res-radius);
+    background: var(--res-brand);
+    color: #fff;
+    font-size: 1.05rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: box-shadow var(--res-transition);
+  }
+  .add-card .btn-primary:hover {
+    box-shadow: 0 0 0 6px rgba(85, 42, 23, 0.3);
+  }
+  
+  /* Mobile stack */
+  @media (max-width: 900px) {
+    main.container {
+      flex-direction: column;
+      text-align: center;
+    }
+    .hero-text {
+      margin-bottom: 2rem;
+    }
+  }
+  
+  /* Make the table‐picker <select> match your frosted‐glass inputs */
+#tableSelect {
+  /* fill the width like your inputs */
+  display: block;
+  width: 100%;
+  /* match your input height & padding */
+  height: 3.5rem;
+  padding: 0 1.25rem;
+  margin-top: 0.5rem;
+
+  /* translucent white + blur */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+
+  /* pill-shape corners */
+  border: none;
+  border-radius: 1.5rem;
+
+  /* gentle inner shadow */
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.05);
+
+  /* match your font styling */
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-primary);
+
+  /* pointer cursor on hover */
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* focus outline—in your brand accent (green) */
+#tableSelect:focus {
+  outline: none;
+  box-shadow:
+    inset 0 4px 10px rgba(0, 0, 0, 0.05),
+    0 0 0 3px var(--free-color);
+}
+
+/* style the disabled placeholder option */
+#tableSelect option[value=""] {
+  color: var(--text-secondary);
+}

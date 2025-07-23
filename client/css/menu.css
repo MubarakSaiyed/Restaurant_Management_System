@@ -1,0 +1,149 @@
+/* menu.css — must come after style.css */
+
+/* --- FILTER BUTTONS --- */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+.filter-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--nav-bg);
+  border-radius: 4px;
+  background: var(--nav-bg);
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.filter-btn.active {
+  background: var(--nav-active);
+}
+.filter-btn:hover:not(.active) {
+  background: var(--nav-hover);
+}
+
+/* 0) Let the menu page “container” go full-width */
+.menu-container {
+  max-width: none;
+  width: 100%;
+  padding: 2rem 1rem;
+}
+
+/* 1) Subtle café-background */
+body {
+  background:
+    linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
+    url('../images/logo.jpg') center/cover no-repeat fixed;
+}
+
+/* 2) Intro & logo styling */
+.menu-logo {
+  display: block;
+  max-width: 140px;
+  margin: 1rem auto;
+}
+.menu-intro {
+  max-width: 600px;
+  margin: 1rem auto 2rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #47312c;
+  text-align: center;
+  font-style: italic;
+}
+
+/* 3) Container for all categories */
+#menuSections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3rem;
+  margin: 2rem 0;
+}
+
+/* 4) Each category block */
+.menu-category {
+  background: rgba(72, 47, 47, 0.927);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: none;
+}
+.menu-category[data-category]:not([data-category]) { display: none; }
+
+/* 5) Category title */
+.category-title {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: #d9d0ce;
+  border-bottom: 2px solid var(--nav-hover);
+  padding-bottom: 0.25rem;
+}
+
+/* 6) Grid within each category */
+.menu-category .menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* 7) Dish card hover effect */
+.menu-category .card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.menu-category .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* 8) Dish image wrapper */
+.menu-category .dish-img-wrap {
+  width: 100%;
+  padding-top: 75%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+}
+.menu-category .dish-img {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+/* 9) Dish name and price */
+.menu-category h4 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1.25rem;
+  color: #fff;
+}
+.menu-category .text-sm {
+  font-size: 0.9rem;
+  color: #ddd;
+}
+.menu-category .text-lg {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--nav-bg);
+}
+
+/* 10) Badge */
+.menu-category .badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+.menu-category .badge.available   { background: #ca7f4d; color: #fff; }
+.menu-category .badge.unavailable { background: #dc3545; color: #fff; }
+
+/* 11) Responsive tweaks */
+@media (max-width: 600px) {
+  .menu-logo { max-width: 100px; }
+  .menu-intro { font-size: 1rem; }
+}

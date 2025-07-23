@@ -2,44 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Login</title>
+  <title>Log In — De Sisha Cafe &amp; Restro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/login.css" />
 </head>
 <body>
+  <!-- NOTIFICATIONS -->
   <div id="notification" class="hidden"></div>
-  <h1>De Sisha Cafe and Restaurant</h1>
 
-  <!-- NOTE the id here -->
-  <form id="loginForm" novalidate>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input 
-        type="email" 
-        id="email" 
-        name="email" 
-        placeholder="you@example.com" 
-        required 
-      />
-      <div class="error-message" data-for="email"></div>
-    </div>
+  <main class="login-container">
+    <!-- Left quote panel -->
+    <aside class="login-quote">
+      <p>“Hospitality is making others feel at home, even if you wish you were.”</p>
+      <p>— De Sisha Cafe &amp; Restro</p>
+    </aside>
 
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input 
-        type="password" 
-        id="password" 
-        name="password" 
-        placeholder="••••••••" 
-        required 
-        minlength="4"
-      />
-      <div class="error-message" data-for="password"></div>
-    </div>
+    <!-- Login form panel -->
+    <section class="login-card">
+      <!-- Logo top -->
+      <img src="images/logo.jpg"
+           alt="De Sisha Cafe & Restro Logo"
+           class="login-logo" />
 
-    <button type="submit">Log In</button>
-  </form>
+      <h1>Log In</h1>
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            id="email" 
+            name="email" 
+            type="email" 
+            placeholder="you@example.com" 
+            required 
+          />
+          <div class="error-message" data-for="email"></div>
+        </div>
 
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            id="password" 
+            name="password" 
+            type="password" 
+            placeholder="••••••••" 
+            required 
+          />
+          <div class="error-message" data-for="password"></div>
+        </div>
+
+        <button type="submit" class="btn-primary">Log In</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Scripts -->
   <script type="module" src="js/validator.js"></script>
+  <script type="module" src="js/notifier.js"></script>
   <script type="module" src="js/login.js"></script>
 </body>
 </html>

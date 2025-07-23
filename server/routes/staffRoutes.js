@@ -1,3 +1,4 @@
+// server/routes/staffRoutes.js
 import express from 'express';
 import {
   getAllStaff,
@@ -5,12 +6,12 @@ import {
   updateStaff,
   deleteStaff
 } from '../controllers/staffController.js';
-import { requireAuth } from '../middleware/requireAuth.js';
-import { requireAdmin } from '../middleware/requireAdmin.js';
+import { requireAuth }  from '../middleware/requireAuth.js';
+import { requireAdmin } from '../middleware/requireAuth.js';
 
 const router = express.Router();
 
-// All staff-management endpoints are admin-only:
+// All of these are admin‐only
 router.get('/',    requireAuth, requireAdmin, getAllStaff);
 router.post('/',   requireAuth, requireAdmin, addStaff);
 router.put('/:id', requireAuth, requireAdmin, updateStaff);

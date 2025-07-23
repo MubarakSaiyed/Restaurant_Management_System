@@ -1,26 +1,25 @@
 // server/routes/orderRoutes.js
-import express            from 'express';
+import express from 'express';
 import {
   getAllOrders,
-  getMyOrders,
+  getMyOrders as getorders,
   createOrder,
-  updateOrderStatus
+  updateOrderStatus,
+  cancelOrder
 } from '../controllers/orderController.js';
-import { requireAuth }    from '../middleware/requireAuth.js';
-import { requireAdmin }   from '../middleware/requireAdmin.js';
+import { requireAuth, requireStaff } from '../middleware/requireAuth.js';
 
 const router = express.Router();
 
-// Admins: view every order
-router.get('/',      requireAuth, requireAdmin, getAllOrders);
-
-// Any logged-in user: view their own orders
-router.get('/my',    requireAuth,               getMyOrders);
-
-// Any logged-in user: place a new order
-router.post('/',     requireAuth,               createOrder);
-
-// Admins: update order status
-router.put('/:id',   requireAuth, requireAdmin, updateOrderStatus);
+// Admin & staff view all
+router.get('/',    requireAuth, requireStaff, getAllOrders);
+// Customer view their own
+router.get('/my',  requireAuth,               getorders);
+// Place a new order
+router.post('/',   requireAuth,               createOrder);
+// Update status (admin/staff)
+router.put('/:id', requireAuth, requireStaff, updateOrderStatus);
+// Cancel an order (customer or staff)
+router.delete('/:id', requireAuth, cancelOrder);
 
 export default router;

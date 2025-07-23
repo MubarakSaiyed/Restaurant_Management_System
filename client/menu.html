@@ -1,83 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Menu</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Restaurant Menu — De Sisha Cafe &amp; Restro</title>
+
+  <!-- Core styles -->
   <link rel="stylesheet" href="css/style.css" />
+  <!-- Menu‐page overrides -->
+  <link rel="stylesheet" href="css/menu.css" />
 </head>
 <body>
-  <nav>
-    <a href="menu.html">Menu</a> |
-    <a href="reservations.html">Reservations</a> |
-    <a href="book.html">Book Table</a> |
-    <a href="staff.html">Staff</a> |
-    <button id="logoutBtn">Log Out</button>
-  </nav>
+  <!-- HEADER / NAV -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <h1 class="logo">De Sisha Café &amp; Restro</h1>
+      <nav class="site-nav">
+        <a href="menu.html"             class="nav-link active">Menu</a>
+        <a href="cart.html"             class="nav-link">Cart</a>
+        <a href="orders.html"           class="nav-link">My Orders</a>
+        <a href="reservations.html"     class="nav-link" id="nav-admin-res">All Reservations</a>
+        <a href="reservation.html"      class="nav-link">Book Table</a>
+        <a href="seating.html"          class="nav-link">Seating Chart</a>
+        <a href="reports.html"          class="nav-link" id="nav-reports">Reports</a>
+        <a href="feedback-loyalty.html" class="nav-link" id="nav-feedback">Feedback &amp; Loyalty</a>
+        <a href="staff.html"            class="nav-link" id="nav-admin-staff">Staff</a>
+        <a href="inventory.html"        class="nav-link" id="nav-admin-inv">Inventory</a>
 
-  <div id="notification" class="hidden"></div>
-  <h1>Menu</h1>
+        <div class="auth-links">
+          <a id="loginLink" href="login.html" class="btn-link">Log In</a>
+          <button id="logoutBtn" class="btn-link hidden">Log Out</button>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-  <!-- only admins will ever see this -->
-  <div id="adminUI">
-    <form id="addForm" novalidate>
-      <h2>Add New Dish</h2>
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="notification"></div>
 
-      <div class="form-group">
-        <label for="dish-name">Name</label>
-        <input id="dish-name" name="name" placeholder="Name" required />
-        <div class="error-message" data-for="dish-name"></div>
-      </div>
+  <!-- PAGE TITLE & INTRO -->
+  <main class="container menu-container">
+    <h2 class="page-title">Our Delicious Menu</h2>
 
-      <div class="form-group">
-        <label for="dish-category">Category</label>
-        <input id="dish-category" name="category" placeholder="Category" required />
-        <div class="error-message" data-for="dish-category"></div>
-      </div>
+    <!-- Restaurant Logo & Intro -->
+    <img src="images/logo.jpg"
+         alt="De Sisha Cafe & Restro Logo"
+         class="menu-logo" />
+    <p class="menu-intro">
+      Embark on a culinary journey where passion meets plate. From artisan brews to handcrafted delights,
+      every flavor at De Sisha Cafe & Restro is a celebration of freshness and flair. Indulge in chef-curated
+      creations, made daily just for you.
+    </p>
 
-      <div class="form-group">
-        <label for="dish-price">Price</label>
-        <input id="dish-price" name="price" type="number" placeholder="Price" required />
-        <div class="error-message" data-for="dish-price"></div>
-      </div>
+    <!-- CATEGORY FILTERS -->
+    <div id="filters" class="filter-container"></div>
 
-      <div class="form-group">
-        <label for="dish-desc">Description</label>
-        <input id="dish-desc" name="description" placeholder="Description" />
-        <div class="error-message" data-for="dish-desc"></div>
-      </div>
+    <!-- ADMIN: Add New Dish Form -->
+    <section id="adminUI" class="card add-card">
+      <h3>Add New Dish</h3>
+      <form id="addForm" novalidate>
+        <div class="form-group">
+          <input id="dish-name"     name="name"        placeholder="Dish Name" required />
+          <div class="error-message" data-for="dish-name"></div>
+        </div>
+        <div class="form-group">
+          <input id="dish-category" name="category"    placeholder="Category" required />
+          <div class="error-message" data-for="dish-category"></div>
+        </div>
+        <div class="form-group">
+          <input id="dish-price"    name="price" type="number" min="0"
+                 placeholder="Price (NPR)" required />
+          <div class="error-message" data-for="dish-price"></div>
+        </div>
+        <div class="form-group">
+          <textarea id="dish-desc" name="description"
+                    placeholder="Description (optional)"></textarea>
+        </div>
+        <div class="form-group form-inline">
+          <label>
+            <input name="available" type="checkbox" checked /> Available
+          </label>
+        </div>
+        <button type="submit" class="btn-primary">Add Dish</button>
+      </form>
+    </section>
 
-      <label>
-        <input name="available" type="checkbox" checked /> Available
-      </label>
+    <!-- DYNAMIC MENU SECTIONS -->
+    <div id="menuSections">
+      <!-- js will inject one .menu-category per distinct category -->
+    </div>
+  </main>
 
-      <button type="submit">Add Dish</button>
-    </form>
-  </div>
-
-  <ul id="menuList"></ul>
-
+  <!-- Core scripts -->
   <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/validator.js"></script>
   <script type="module" src="js/menu.js"></script>
-  <script type="module">
-    import { getUserRole } from './js/api.js';
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const role = getUserRole();
+  <script>
+    // Determine role
+    const role = localStorage.getItem('role') || 'guest';
 
-      // hide admin parts for non-admins
-      if (role !== 'admin') {
-        document.getElementById('adminUI').style.display = 'none';
-        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
-        document.querySelector('nav a[href="reservations.html"]').style.display = 'none';
-      }
+    // Toggle Login / Logout buttons
+    if (role === 'guest') {
+      document.getElementById('loginLink').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+    } else {
+      document.getElementById('loginLink').classList.add('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+      document.getElementById('logoutBtn').onclick = () => {
+        localStorage.clear();
+        window.location.href = 'menu.html';
+      };
+    }
 
-      // wire up logout
-      document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('role');
-        window.location.href = 'login.html';
-      });
-    });
+    // Hide all admin-only links if not admin
+    ['nav-admin-res','nav-admin-staff','nav-admin-inv','nav-reports']
+      .forEach(id => document.getElementById(id)?.classList.toggle('hidden', role !== 'admin'));
   </script>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p class="footer-quote">
+        “We don’t just serve food—we plate up moments that linger long after the last bite.”
+      </p>
+      <small class="footer-copy">&copy; 2025 De Sisha Café &amp; Restro. All rights reserved.</small>
+    </div>
+  </footer>
 </body>
 </html>

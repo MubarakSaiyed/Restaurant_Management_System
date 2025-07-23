@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Orders — De Sisha Cafe &amp; Restro</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+</head>
+<body>
+
+  <!-- HEADER / NAV -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <h1 class="logo">De Sisha Café &amp; Restro</h1>
+      <nav class="site-nav">
+        <a href="menu.html"             class="nav-link">Menu</a>
+        <a href="cart.html"             class="nav-link">Cart</a>
+        <a href="orders.html"           class="nav-link active" id="nav-orders">My Orders</a>
+        <a href="reservations.html"     class="nav-link" id="nav-admin-res">All Reservations</a>
+        <a href="reservation.html"      class="nav-link">Book Table</a>
+        <a href="seating.html"          class="nav-link">Seating Chart</a>
+        <a href="staff.html"            class="nav-link" id="nav-admin-staff">Staff</a>
+        <a href="inventory.html"        class="nav-link" id="nav-admin-inv">Inventory</a>
+        <a href="reports.html"          class="nav-link" id="nav-reports">Reports</a>
+        <a href="feedback-loyalty.html" class="nav-link" id="nav-feedback">Feedback &amp; Loyalty</a>
+        <div class="auth-links">
+          <a id="loginLink" href="login.html" class="btn-link">Log In</a>
+          <button id="logoutBtn" class="btn-link hidden">Log Out</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TOASTS -->
+  <div id="notification"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    <h2 class="page-title">My Orders</h2>
+    <div class="orders-wrapper">
+      <aside class="orders-text left-text">
+        <p>“Sip. Savor. Smile.”</p>
+        <p>Every order tells a story—what’s yours today?</p>
+      </aside>
+
+      <div class="orders-content">
+        <ul id="ordersList" class="orders-container"></ul>
+        <nav id="pagination" class="pagination"></nav>
+      </div>
+
+      <aside class="orders-text right-text">
+        <p>“Good food is all the sweeter when shared.”</p>
+        <p>Thank you for choosing De Sisha Cafe!</p>
+      </aside>
+    </div>
+  </main>
+
+  <!-- MODAL FOR CANCEL CONFIRMATION -->
+  <dialog id="cancelModal" class="custom-modal">
+    <form method="dialog" class="modal-content">
+      <p>Cancel this order?</p>
+      <menu>
+        <button value="no" class="badge cancel-btn">No</button>
+        <button id="confirmCancel" value="yes" class="badge new">Yes</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <!-- SCRIPTS -->
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/validator.js"></script>
+  <script type="module" src="js/orders.js"></script>
+
+  <!-- hide admin‐only links & toggle login/logout -->
+  <script>
+    const role = localStorage.getItem('role') || 'guest';
+
+    // Only admins see All Reservations, Staff, Inventory & Reports
+    if (role !== 'admin') {
+      document.getElementById('nav-admin-res')?.classList.add('hidden');
+      document.getElementById('nav-admin-staff')?.classList.add('hidden');
+      document.getElementById('nav-admin-inv')?.classList.add('hidden');
+      document.getElementById('nav-reports')?.classList.add('hidden');
+    }
+
+    // Show Log In for guests, Log Out for everyone else
+    if (role === 'guest') {
+      document.getElementById('loginLink').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+    } else {
+      document.getElementById('loginLink').classList.add('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+    }
+
+    document.getElementById('logoutBtn').onclick = () => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    };
+  </script>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p class="footer-quote">
+        “We don’t just serve food—we plate up moments that linger long after the last bite.”
+      </p>
+      <small class="footer-copy">&copy; 2025 De Sisha Café &amp; Restro. All rights reserved.</small>
+    </div>
+  </footer>
+
+</body>
+</html>

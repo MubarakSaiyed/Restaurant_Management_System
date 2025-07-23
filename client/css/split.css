@@ -1,0 +1,139 @@
+/* split.css */
+
+/* overall container spacing */
+.split-container {
+    padding: 2rem 0;
+  }
+  
+  /* card tweaks */
+  .split-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* error message */
+  #split-error {
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  /* order table styling */
+  #order-items-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #order-items-table th,
+  #order-items-table td {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    font-size: 0.95rem;
+  }
+  #order-items-table thead th {
+    background-color: #6D4C41;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  #order-items-table tfoot th {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  /* fieldsets for shares */
+  #shares-container fieldset {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    background: #fafafa;
+  }
+  #shares-container legend {
+    padding: 0 0.5rem;
+    font-weight: 600;
+  }
+  
+  /* text inputs & number inputs */
+  .input-field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+  .share-item {
+    margin-top: 0.75rem;
+  }
+  
+  /* buttons */
+  .btn-primary,
+  .btn-secondary {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .btn-primary {
+    background: #A36847;
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: #8b5537;
+  }
+  .btn-secondary {
+    background: #6D4C41;
+    color: #fff;
+  }
+  .btn-secondary:hover {
+    background: #5b3b2f;
+  }
+  
+  /* split bills list */
+  #billsList {
+    list-style: none;
+    padding: 0;
+  }
+  #billsList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .badge-success {
+    background-color: #28a745;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  /* split.css */
+
+.paid-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #28a745;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  
+  .paid-badge::before {
+    content: "✔";
+    margin-right: 0.4em;
+    font-size: 1rem;
+    line-height: 1;
+  }
+  

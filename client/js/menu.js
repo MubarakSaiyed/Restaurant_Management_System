@@ -1,148 +1,241 @@
+// client/js/menu.js
+
 import { fetchMenu, authedFetch, getUserRole } from './api.js';
-import { showNotification }                  from './notifier.js';
-import { validateForm }                      from './validator.js';
+import { showNotification }                   from './notifier.js';
+import { validateForm }                       from './validator.js';
+import { loadCart, saveCart }                 from './cartStorage.js';
 
-if (!localStorage.getItem('jwt')) {
-  window.location.href = 'login.html';
-}
+const loginLink     = document.getElementById('loginLink');
+const logoutBtn     = document.getElementById('logoutBtn');
+const adminUI       = document.getElementById('adminUI');
+const addForm       = document.getElementById('addForm');
+const menuContainer = document.getElementById('menuSections');
+const filtersDiv    = document.getElementById('filters');
 
-// global logout hookup
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('jwt');
-  localStorage.removeItem('role');
-  window.location.href = 'login.html';
-});
+const role = getUserRole() || 'guest';
 
-const role = getUserRole();
+;(async function init() {
+  // ── Toggle login/logout UI ─────────────────────────
+  if (role === 'guest') {
+    loginLink.classList.remove('hidden');
+    logoutBtn.classList.add('hidden');
+  } else {
+    loginLink.classList.add('hidden');
+    logoutBtn.classList.remove('hidden');
+    logoutBtn.onclick = () => {
+      localStorage.clear();
+      window.location.href = 'menu.html';
+    };
+  }
 
-// 1) Load & render menu
+  // ── Admin Add/Edit form ─────────────────────────────
+  if (role !== 'admin') {
+    adminUI?.classList.add('hidden');
+  } else {
+    addForm?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const errs = validateForm(addForm);
+      if (Object.keys(errs).length) return;
+
+      const fd = new FormData(addForm);
+
+      try {
+        let res;
+        if (addForm.dataset.editId) {
+          // Edit existing
+          const id = addForm.dataset.editId;
+          res = await authedFetch(`/menu/${id}`, {
+            method: 'PUT',
+            body:   fd
+          });
+        } else {
+          // Add new
+          res = await authedFetch('/menu', {
+            method: 'POST',
+            body:   fd
+          });
+        }
+
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.message || 'Save failed');
+
+        showNotification(
+          addForm.dataset.editId ? 'Dish updated ✔️' : 'Dish added ✔️',
+          'success'
+        );
+
+        // Reset form & exit edit mode
+        addForm.reset();
+        delete addForm.dataset.editId;
+        adminUI.querySelector('h3').textContent = 'Add New Dish';
+        addForm.querySelector('button').textContent = 'Add Dish';
+
+        await loadMenu();
+      } catch (err) {
+        showNotification('Save failed: ' + err.message, 'error');
+      }
+    });
+  }
+
+  // ── Initial load ────────────────────────────────────
+  await loadMenu();
+})();
+
 async function loadMenu() {
   try {
     const items = await fetchMenu();
-    const list  = document.getElementById('menuList');
-    list.innerHTML = '';
 
-    items.forEach(item => {
-      const li = document.createElement('li');
-      li.classList.add('menu-item');
-      li.dataset.id = item.id;
+    // Group by category
+    const byCat = items.reduce((g, item) => {
+      const cat = item.category || 'Uncategorized';
+      (g[cat] = g[cat]||[]).push(item);
+      return g;
+    }, {});
 
-      const span = document.createElement('span');
-      span.textContent = `${item.name} — NPR ${item.price.toFixed(2)}`;
-      li.append(span);
-
-      // only admins get Edit/Delete
-      if (role === 'admin') {
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Edit';
-        editBtn.addEventListener('click', () => startEdit(item, li));
-        li.append(editBtn);
-
-        const delBtn = document.createElement('button');
-        delBtn.textContent = 'Delete';
-        delBtn.addEventListener('click', () => deleteDish(item.id));
-        li.append(delBtn);
-      }
-
-      list.append(li);
+    // Build filter buttons
+    const cats = ['All', ...Object.keys(byCat).sort()];
+    filtersDiv.innerHTML = '';
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn' + (cat==='All' ? ' active' : '');
+      btn.textContent = cat;
+      btn.onclick = () => {
+        document.querySelectorAll('.filter-btn')
+          .forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.menu-category').forEach(sec => {
+          sec.style.display = (cat==='All' || sec.dataset.category===cat)
+            ? '' : 'none';
+        });
+      };
+      filtersDiv.append(btn);
     });
+
+    // Render categories & cards
+    menuContainer.innerHTML = '';
+    for (const [category, list] of Object.entries(byCat)) {
+      const sec = document.createElement('section');
+      sec.className = 'menu-category';
+      sec.dataset.category = category;
+
+      const h3 = document.createElement('h3');
+      h3.className = 'category-title';
+      h3.textContent = category;
+      sec.append(h3);
+
+      const grid = document.createElement('div');
+      grid.className = 'menu-grid';
+
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const content = document.createElement('div');
+        content.className = 'card-content';
+
+        // —— IMAGE logic ——
+        let imgSrc;
+        if (item.imageUrl) {
+          imgSrc = item.imageUrl.startsWith('/')
+            ? item.imageUrl
+            : `/uploads/${item.imageUrl}`;
+        } else {
+          const f = item.name.replace(/\s+/g,'') + '.jpg';
+          imgSrc = `/images/${f}`;
+        }
+        content.innerHTML = `
+          <div class="dish-img-wrap">
+            <img src="${imgSrc}"
+                 alt="${item.name}"
+                 class="dish-img"
+                 onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
+          </div>
+          <h4>${item.name}</h4>
+          <p class="text-sm">${item.category}</p>
+          <p class="text-lg">NPR ${item.price.toFixed(2)}</p>
+          <span class="badge ${item.available ? 'available' : 'unavailable'}">
+            ${item.available ? 'Available' : 'Unavailable'}
+          </span>
+        `;
+
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+
+        // Add to cart
+        const addBtn = document.createElement('button');
+        addBtn.textContent = 'Add to Cart';
+        addBtn.className   = 'add-btn';
+        addBtn.disabled    = !item.available;
+        addBtn.onclick     = () => {
+          const cart = loadCart();
+          const found = cart.find(c=>c.menuId===item.id);
+          if (found) found.quantity++;
+          else cart.push({
+            menuId: item.id,
+            name:   item.name,
+            price:  item.price,
+            quantity: 1
+          });
+          saveCart(cart);
+          showNotification(`"${item.name}" added to cart`, 'info');
+        };
+        actions.append(addBtn);
+
+        // Admin Edit/Delete
+        if (role==='admin') {
+          const editBtn = document.createElement('button');
+          editBtn.textContent = 'Edit';
+          editBtn.className = 'edit-btn';
+          editBtn.onclick   = () => startEdit(item);
+          actions.append(editBtn);
+
+          const delBtn = document.createElement('button');
+          delBtn.textContent = 'Delete';
+          delBtn.className   = 'delete-btn';
+          delBtn.onclick     = () => deleteDish(item.id);
+          actions.append(delBtn);
+        }
+
+        card.append(content, actions);
+        grid.append(card);
+      });
+
+      sec.append(grid);
+      menuContainer.append(sec);
+    }
+
+    // Activate “All”
+    document.querySelector('.filter-btn.active').click();
+
   } catch (err) {
-    console.error('❌ loadMenu error:', err);
-    showNotification('Could not load menu: ' + err.message, 'error');
+    console.error('Could not load menu:', err);
+    showNotification('Could not load menu', 'error');
   }
 }
 
-// 2) Delete
 async function deleteDish(id) {
-  if (!confirm('Really delete this dish?')) return;
+  if (!confirm('Delete this dish?')) return;
   try {
-    await authedFetch(`/menu/${id}`, { method: 'DELETE' });
-    showNotification('Dish deleted', 'success');
+    const res = await authedFetch(`/menu/${id}`, { method: 'DELETE' });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.message || 'Delete failed');
+    showNotification('Dish deleted ✔️','success');
     await loadMenu();
   } catch (err) {
-    console.error('🚨 deleteDish error:', err);
-    showNotification('Could not delete dish: ' + err.message, 'error');
+    console.error(err);
+    showNotification('Delete failed: '+err.message,'error');
   }
 }
 
-// 3) Inline edit
-function startEdit(item, li) {
-  li.innerHTML = '';
+function startEdit(item) {
+  addForm.elements.name.value        = item.name;
+  addForm.elements.category.value    = item.category;
+  addForm.elements.price.value       = item.price;
+  addForm.elements.description.value = item.description || '';
+  addForm.elements.available.checked = item.available;
 
-  const nameI  = document.createElement('input');
-  nameI.value  = item.name;
-  li.append(nameI);
-
-  const priceI = document.createElement('input');
-  priceI.type  = 'number';
-  priceI.value = item.price;
-  li.append(priceI);
-
-  const saveBtn = document.createElement('button');
-  saveBtn.textContent = 'Save';
-  saveBtn.addEventListener('click', async () => {
-    const updated = {
-      name:  nameI.value,
-      price: parseFloat(priceI.value)
-    };
-
-    try {
-      await authedFetch(`/menu/${item.id}`, {
-        method: 'PUT',
-        body:   JSON.stringify(updated),
-      });
-      showNotification('Dish updated', 'success');
-      await loadMenu();
-    } catch (err) {
-      console.error('🚨 edit error:', err);
-      showNotification('Could not update dish: ' + err.message, 'error');
-    }
-  });
-  li.append(saveBtn);
-
-  const cancelBtn = document.createElement('button');
-  cancelBtn.textContent = 'Cancel';
-  cancelBtn.addEventListener('click', loadMenu);
-  li.append(cancelBtn);
+  addForm.dataset.editId = item.id;
+  adminUI.querySelector('h3').textContent = 'Edit Dish';
+  addForm.querySelector('button').textContent = 'Save Changes';
+  addForm.scrollIntoView({ behavior:'smooth' });
 }
-
-// 4) Add‐new‐dish form (admins only)
-const addForm = document.getElementById('addForm');
-if (addForm) {
-  addForm.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const errors = validateForm(addForm);
-    if (Object.keys(errors).length) return;
-
-    const fd = new FormData(addForm);
-    const newDish = {
-      name:        fd.get('name'),
-      category:    fd.get('category'),
-      price:       parseFloat(fd.get('price')),
-      description: fd.get('description'),
-      available:   fd.get('available') === 'on'
-    };
-
-    try {
-      await authedFetch('/menu', {
-        method: 'POST',
-        body:   JSON.stringify(newDish),
-      });
-      showNotification('Dish added', 'success');
-      addForm.reset();
-      await loadMenu();
-    } catch (err) {
-      console.error('🚨 addForm error:', err);
-      showNotification('Could not add dish: ' + err.message, 'error');
-    }
-  });
-}
-
-// 5) Kick everything off
-document.addEventListener('DOMContentLoaded', () => {
-  if (role !== 'admin' && addForm) {
-    addForm.style.display = 'none';
-  }
-  loadMenu();
-});

@@ -1,0 +1,47 @@
+/* inventory.css */
+
+#inventoryTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  #inventoryTable th,
+  #inventoryTable td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  #inventoryTable th {
+    background: var(--nav-bg);
+    color: var(--nav-text);
+  }
+  
+  .stock-low {
+    background: #fff3cd;
+  }
+  
+  .stock-zero {
+    background: #f8d7da;
+  }
+  
+  .btn-stock-input {
+    width: 4rem;
+    padding: 0.25rem;
+  }
+  
+  .btn-stock-save {
+    padding: 0.4rem 0.8rem;
+    background: var(--nav-hover);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-stock-save:hover {
+    background: var(--nav-active);
+  }
+  

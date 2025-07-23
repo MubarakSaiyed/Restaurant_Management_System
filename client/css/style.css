@@ -1,203 +1,390 @@
-/* Reset & base */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
-    color: #333;
-    line-height: 1.5;
-    padding: 20px;
-  }
-  
-  /* Navigation bar */
-  nav {
-    background: #f5f5f5;
-    padding: 0.5em;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  nav a, nav button { color: #1976d2; text-decoration: none; background: none; }
-    
-  nav {
-    margin-bottom: 20px;
-  }
-  nav a,
-  nav button {
-    display: inline-block;
-    margin-right: 12px;
-    text-decoration: none;
-    color: #0066cc;
-    font-weight: bold;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  nav button:hover,
-  nav a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Headings */
-  h1 {
-    margin-bottom: 16px;
-    font-size: 2rem;
-    color: #222;
-  }
-  h2 {
-    margin-top: 16px;
-    margin-bottom: 8px;
-    font-size: 1.2rem;
-    color: #444;
-  }
-  
-  /* Forms */
-  form {
-    background: #fff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    max-width: 400px;
-    margin-bottom: 24px;
-  }
-  .form-group { margin-bottom: 1rem; }
-  .error-message {
-    color: #e53935;
-    font-size: 0.875rem;
-    height: 1em;
-    margin-top: 0.25rem;
-}
+/* ===========================================================================
+   IMPORT FONT AWESOME (for nav‐icons)
+   =========================================================================== */
+   @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
 
-  form input,
-  form select,
-  form button {
-    width: 100%;
-    margin: 8px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  form button {
-    background: #0066cc;
-    color: #fff;
-    border: none;
-    font-size: 1rem;
-  }
-  form button:hover {
-    background: #005bb5;
-  }
-  
-  /* Lists (menu) */
-  ul#menuList {
-    list-style: none;
-    padding: 0;
-    max-width: 600px;
-  }
-  ul#menuList li {
-    background: #fff;
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  }
-  ul#menuList li span {
-    flex-grow: 1;
-  }
-  ul#menuList li button {
-    margin-left: 8px;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
-  
-  /* Tables (reservations) */
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 800px;
-    margin-top: 16px;
-  }
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-  th {
-    background: #f2f2f2;
-  }
-  
-  /* Responsive tweaks */
-  @media (max-width: 600px) {
-    form, ul#menuList, table {
-      width: 100%;
+   /* ===========================================================================
+      BASE & RESET
+      =========================================================================== */
+   *,
+   *::before,
+   *::after {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+   body {
+     font-family: 'Segoe UI', Tahoma, sans-serif;
+     background: #fafafa;
+     color: #333;
+     line-height: 1.5;
+   }
+   .container {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 1rem;
+   }
+   
+   /* ===========================================================================
+      HEADER & NAV (Brown Theme + Pop-up Hover)
+      =========================================================================== */
+   :root {
+     --nav-bg:        #4e342e;
+     --nav-text:      #efebe9;
+     --nav-hover:     #6d4c41;
+     --nav-active:    #8d6e63;
+     --nav-pop:       translateY(-4px);
+     --nav-shadow:    0 4px 8px rgba(0,0,0,0.2);
+     --nav-transition: 0.2s ease;
+   }
+   
+   .site-header {
+     background: var(--nav-bg);
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+     z-index: 10;
+   }
+   .nav-container {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     padding: 1rem 0;
+   }
+   
+   /* Brand: logo image + text */
+   .logo {
+     position: relative;
+     display: inline-block;
+     text-indent: 0;        /* show text */
+     padding: 0 0 0 56px;
+     font-size: 1.5rem;
+     color: var(--nav-text);
+     font-weight: bold;
+     line-height: 1;
+   }
+   .logo::before {
+     content: "";
+     position: absolute;
+     left: 0;
+     top: 50%;
+     transform: translateY(-50%);
+     width: 36px;
+     height: 36px;
+     background: url('../images/logo.jpg') no-repeat center/contain;
+   }
+   /* Site navigation */
+   .site-nav {
+     display: flex;
+     align-items: center;
+     gap: 1rem;
+   }
+   /* Base nav-link/button */
+   .nav-link,
+   button#logoutBtn {
+     position: relative;
+     display: inline-flex;
+     align-items: center;
+     gap: 0.4rem;
+     text-decoration: none;
+     color: var(--nav-text);
+     font-weight: 500;
+     padding: .6rem .9rem;
+     border-radius: 4px;
+     transition:
+       transform var(--nav-transition),
+       background var(--nav-transition),
+       box-shadow var(--nav-transition);
+     background: none;
+     border: none;
+     cursor: pointer;
+   }
+   /* Icons via FontAwesome */
+   .site-nav a[href$="menu.html"]::before        { content: "\f2e7"; } /* utensils */
+   .site-nav a[href$="cart.html"]::before        { content: "\f07a"; } /* cart */
+   .site-nav a[href$="orders.html"]::before      { content: "\f543"; } /* receipt */
+   .site-nav a[href$="reservation.html"]::before { content: "\f274"; } /* calendar-alt */
+   .site-nav a[href$="staff.html"]::before       { content: "\f0c0"; } /* users */
+   .site-nav a#loginLink::before                 { content: "\f090"; } /* sign-in-alt */
+   .site-nav button#logoutBtn::before            { content: "\f2f5"; } /* sign-out-alt */
+   .site-nav .nav-link::before,
+   .site-nav button#logoutBtn::before {
+     font-family: "Font Awesome 5 Free";
+     font-weight: 900;
+     color: var(--nav-text);
+   }
+   /* Hover & active */
+   .nav-link:hover,
+   button#logoutBtn:hover {
+     background: var(--nav-hover);
+     transform: var(--nav-pop);
+     box-shadow: var(--nav-shadow);
+   }
+   .nav-link.active {
+     background: var(--nav-active);
+     pointer-events: none;
+   }
+   
+   /* Auth-links fallback */
+   .auth-links {
+     display: flex;
+     gap: 1rem;
+   }
+   .btn-link,
+   .auth-links a {
+     background: none;
+     border: none;
+     color: var(--nav-text);
+     text-decoration: underline;
+     font-size: 1rem;
+     cursor: pointer;
+     transition: color var(--nav-transition);
+   }
+   .btn-link:hover,
+   .auth-links a:hover {
+     color: #fff;
+   }
+   .hidden {
+     display: none !important;
+   }
+   
+   @media (max-width: 600px) {
+     .nav-container {
+       flex-direction: column;
+       gap: .5rem;
+     }
+     .nav-link,
+     .btn-link,
+     .auth-links a {
+       width: 100%;
+       text-align: center;
+     }
+   }
+   
+   /* ===========================================================================
+      TOAST NOTIFICATIONS
+      =========================================================================== */
+   #notification {
+     position: fixed;
+     top: 1rem;
+     right: 1rem;
+     z-index: 1000;
+   }
+   .notification {
+     background: #634744;
+     color: #fff;
+     padding: .75rem 1.25rem;
+     border-radius: 4px;
+     margin-top: .5rem;
+     opacity: 0;
+     transform: translateY(-10px);
+     transition: opacity .3s, transform .3s;
+   }
+   .notification.show {
+     opacity: 1;
+     transform: translateY(0);
+   }
+   
+   /* ===========================================================================
+      PAGE TITLE
+      =========================================================================== */
+   .page-title {
+     margin: 2rem 0 1rem;
+     font-size: 2rem;
+     text-align: center;
+     color: #9d6f50;
+   }
+   
+   /* ===========================================================================
+      CARDS, FORMS, GRID, BADGES, BUTTONS
+      =========================================================================== */
+   /* Add-Card */
+   .add-card {
+     background: #fff;
+     border-radius: 6px;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+     padding: 1.5rem;
+     margin-bottom: 2rem;
+   }
+   .add-card h3 {
+     margin-bottom: 1rem;
+     color: #b88d60;
+     font-size: 1.25rem;
+   }
+   /* Form groups */
+   .form-group {
+     margin-bottom: 1rem;
+   }
+   .form-group input,
+   .form-group textarea {
+     width: 100%;
+     padding: .6rem;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+   }
+   .form-group textarea {
+     resize: vertical;
+     min-height: 3rem;
+   }
+   .form-inline {
+     display: flex;
+     align-items: center;
+     gap: .5rem;
+   }
+   /* Primary buttons */
+   .btn-primary {
+     width: 100%;
+     padding: .75rem 1.5rem;
+     background: #b8814e;
+     color: #fff;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
+     font-size: 1rem;
+     transition: background .3s;
+   }
+   .btn-primary:hover {
+     background: #c18741;
+   }
+   /* Grid & cards */
+   .grid {
+     display: grid;
+     gap: 1.5rem;
+   }
+   .menu-grid {
+     grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+   }
+   .card {
+     background: #fff;
+     border-radius: 6px;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+     display: flex;
+     flex-direction: column;
+     justify-content: space-between;
+     overflow: hidden;
+   }
+   .card-content {
+     padding: 1rem;
+   }
+   .card-content h4 {
+     font-size: 1.25rem;
+     margin-bottom: .5rem;
+     color: #333;
+   }
+   .card-content p {
+     margin-bottom: .5rem;
+     color: #555;
+   }
+   /* Badges */
+   .badge {
+     display: inline-block;
+     padding: .25rem .5rem;
+     border-radius: 3px;
+     font-size: .8rem;
+     font-weight: 500;
+   }
+   .badge.available {
+     background: #ca7f4d;
+     color: #fff;
+   }
+   .badge.unavailable {
+     background: #dc3545;
+     color: #fff;
+   }
+   /* Card actions */
+   .card-actions {
+     display: flex;
+     justify-content: space-between;
+     padding: 1rem;
+     background: #f9f9f9;
+   }
+   .card-actions button {
+     flex: 1;
+     margin: 0 .25rem;
+     padding: .6rem;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
+     font-size: .9rem;
+   }
+   .card-actions .add-btn {
+     background: #7e4b30aa;
+     color: #fff;
+   }
+   .card-actions .add-btn:disabled {
+     background: #ccc;
+     cursor: not-allowed;
+   }
+   .card-actions .edit-btn {
+     background: #ffc107;
+     color: #333;
+   }
+   .card-actions .delete-btn {
+     background: #dc3545;
+     color: #fff;
+   }
+   
+   /* wrap the image inside a fixed-ratio container */
+   .dish-img-wrap {
+     width: 100%;
+     padding-top: 75%;
+     position: relative;
+     overflow: hidden;
+     border-radius: 6px 6px 0 0;
+   }
+   .dish-img-wrap .dish-img {
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+   }
+   
+   /* ===========================================================================
+      RESPONSIVE
+      =========================================================================== */
+   @media (max-width: 600px) {
+     .page-title {
+       font-size: 1.5rem;
+     }
+   }
+   /* Make the page body a full-height column flex container */
+    html, body {
+      height: 100%;
+      margin: 0;
     }
-    ul#menuList li {
+    body {
+      display: flex;
       flex-direction: column;
-      align-items: flex-start;
     }
-    ul#menuList li button {
-      margin: 8px 4px 0 0;
+
+    /* Let <main> expand to push footer down */
+    main {
+      flex: 1 0 auto; /* grow and shrink, base size auto */
     }
-  }
 
-/* Notification banner */
-#notification {
-    position: fixed;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    pointer-events: none;
+   /* For Footer */
+   .site-footer {
+    background: #6D4C41;        /* warm deep-brown */
+    color: #fff;
+    padding: 2rem 0;
+    text-align: center;
+    font-style: italic;
+  }
+  .footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .footer-quote {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+  }
+  .footer-copy {
+    font-size: 0.9rem;
+    opacity: 0.8;
   }
   
-  /* Base notification styling */
-  .notification {
-    margin: 0.5rem 0;
-    padding: 0.75rem 1.25rem;
-    border-radius: 0.25rem;
-    color: white;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(-1rem);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
   
-  /* Slide/fade in */
-  .notification.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* Types */
-  .notification.info    { background: #2f86eb; }
-  .notification.success { background: #28a745; }
-  .notification.warn    { background: #ffc107; color: #333; }
-  .notification.error   { background: #dc3545; }
-  
-
-  button.loading {
-    opacity: 0.6;
-    pointer-events: none;
-  }
-  button {
-    padding: 0.5em 1em;
-    border: none; border-radius: 4px;
-  }
-  button:hover { opacity: 0.9; }
-  button + button { margin-left: 0.5em; }
-  ul#menuList li {
-    list-style: none;
-    padding: 0.5em 0;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  ul#menuList li span { flex: 1; }
-  
-  
+   

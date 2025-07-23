@@ -2,83 +2,135 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Staff Management</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/staff.css" />
 </head>
 <body>
-  <nav>
-    <a href="menu.html">Menu</a> |
-    <a href="reservations.html">Reservations</a> |
-    <a href="book.html">Book Table</a> |
-    <a href="staff.html">Staff</a> |
-    <button id="logoutBtn">Log Out</button>
-  </nav>
+  <header class="site-header">
+    <div class="container nav-container">
+      <h1 class="logo">De Sisha Café &amp; Restro</h1>
+      <nav class="site-nav">
+        <a href="menu.html"             class="nav-link">Menu</a>
+        <a href="cart.html"             class="nav-link">Cart</a>
+        <a href="orders.html"           class="nav-link">My Orders</a>
+        <a href="reservations.html"     class="nav-link" id="nav-admin-res">All Reservations</a>
+        <a href="reservation.html"      class="nav-link">Book Table</a>
+        <a href="seating.html"          class="nav-link">Seating Chart</a>
+        <a href="staff.html"            class="nav-link" id="nav-admin-staff">Staff</a>
+        <a href="inventory.html"        class="nav-link" id="nav-admin-inv">Inventory</a>
+        <a href="reports.html"          class="nav-link" id="nav-reports">Reports</a>
+        <a href="feedback-loyalty.html" class="nav-link" id="nav-feedback">Feedback &amp; Loyalty</a>
+        <div class="auth-links">
+          <a id="loginLink" href="login.html"  class="btn-link">Log In</a>
+          <button id="logoutBtn" class="btn-link hidden">Log Out</button>
+        </div>
+      </nav>
+    </div>
+  </header>
 
   <div id="notification" class="hidden"></div>
-  <h1>Staff Management</h1>
 
-  <!-- admin-only -->
-  <div id="adminUI">
-    <form id="staffForm" novalidate>
-      <h2>Add / Edit Staff</h2>
+  <main class="container">
+    <h1 class="page-title">Staff Management</h1>
 
-      <div class="form-group">
-        <label for="staff-name">Name</label>
-        <input id="staff-name" name="name" type="text" required />
-        <div class="error-message" data-for="staff-name"></div>
-      </div>
+    <div class="content-grid">
+      <!-- Add/Edit Form -->
+      <section class="card manage-card" id="manageSection">
+        <h2>Add / Edit Staff</h2>
+        <form id="staffForm" novalidate>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input id="name" name="name" required />
+            <div class="error-message" data-for="name"></div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required />
+            <div class="error-message" data-for="email"></div>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" required />
+            <div class="error-message" data-for="phone"></div>
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <select id="role" name="role" required>
+              <option value="">Select role</option>
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+            <div class="error-message" data-for="role"></div>
+          </div>
+          <div class="form-group">
+            <label for="shiftStart">Shift Start</label>
+            <input id="shiftStart" name="shiftStart" type="time" />
+          </div>
+          <div class="form-group">
+            <label for="shiftEnd">Shift End</label>
+            <input id="shiftEnd" name="shiftEnd" type="time" />
+          </div>
+          <div class="form-group">
+            <label for="wage">Wage</label>
+            <input id="wage" name="wage" type="number" step="0.01" />
+          </div>
+          <button type="submit" class="btn-submit">Save</button>
+        </form>
 
-      <div class="form-group">
-        <label for="staff-role">Role</label>
-        <input id="staff-role" name="role" type="text" required />
-        <div class="error-message" data-for="staff-role"></div>
-      </div>
+        <!-- moved out of the form -->
+        <div class="form-actions">
+          <button type="button" id="open-schedule-btn" class="btn-secondary">
+            Schedule &amp; Payroll
+          </button>
+        </div>
+      </section>
 
-      <div class="form-group">
-        <label for="staff-shiftStart">Shift Start</label>
-        <input id="staff-shiftStart" name="shiftStart" type="time" required />
-        <div class="error-message" data-for="staff-shiftStart"></div>
-      </div>
-
-      <div class="form-group">
-        <label for="staff-shiftEnd">Shift End</label>
-        <input id="staff-shiftEnd" name="shiftEnd" type="time" required />
-        <div class="error-message" data-for="staff-shiftEnd"></div>
-      </div>
-
-      <div class="form-group">
-        <label for="staff-wage">Wage</label>
-        <input id="staff-wage" name="wage" type="number" step="0.01" required />
-        <div class="error-message" data-for="staff-wage"></div>
-      </div>
-
-      <button type="submit">Save</button>
-    </form>
-  </div>
-
-  <ul id="staffList"></ul>
-
-  <!-- modules -->
+      <!-- Staff List -->
+      <section class="card list-card" id="listSection">
+        <h2>All Staff</h2>
+        <div class="table-wrapper">
+          <table id="staffTable">
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Phone</th>
+                <th>Role</th><th>Shift Start</th>
+                <th>Shift End</th><th>Wage</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody><!-- JS will populate --></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+  
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/validator.js"></script>
   <script type="module" src="js/staff.js"></script>
+  <script>
+    const role = localStorage.getItem('role') || 'guest';
+    if (role !== 'admin') {
+      document.getElementById('nav-admin-res')?.classList.add('hidden');
+      document.getElementById('nav-admin-staff')?.classList.add('hidden');
+      document.getElementById('nav-admin-inv')?.classList.add('hidden');  
+    }
 
-  <script type="module">
-    import { getUserRole } from './js/api.js';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const role = getUserRole();
-      if (role !== 'admin') {
-        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
-        document.getElementById('adminUI').style.display = 'none';
-      }
-
-      document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('role');
-        window.location.href = 'login.html';
+    document.getElementById('open-schedule-btn')
+      .addEventListener('click', () => {
+        window.location.href = 'staff-schedule.html';
       });
-    });
   </script>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p class="footer-quote">
+        “We don’t just serve food—we plate up moments that linger long after the last bite.”
+      </p>
+      <small class="footer-copy">&copy; 2025 De Sisha Café & Restro. All rights reserved.</small>
+    </div>
+  </footer>
 </body>
 </html>

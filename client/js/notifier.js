@@ -1,37 +1,34 @@
-// client/js/notifier.js
-
 /**
- * Show a temporary banner at top of page.
- * @param {string} message   The text to display
- * @param {'info'|'success'|'warn'|'error'} type  Which style to apply
- * @param {number} duration  Milliseconds before auto‐hide
+ * showNotification()
+ * Displays a transient toast banner.
+ *
+ * @param {string} message   The message text
+ * @param {'info'|'success'|'warn'|'error'} type  (optional) style variant
+ * @param {number} duration  (optional) ms before auto-hide
  */
-export function showNotification(message, type = 'info', duration = 3000) {
-    // Find (or bail if missing) the container
+export function showNotification(
+    message,
+    type = 'info',
+    duration = 3000
+  ) {
     const container = document.getElementById('notification');
-    if (!container) {
-      console.warn('No #notification container found');
-      return;
-    }
+    if (!container) return;
   
-    // Create the message element
+    // Create toast
     const note = document.createElement('div');
     note.classList.add('notification', type);
     note.textContent = message;
   
-    // Append & trigger CSS animation
     container.appendChild(note);
-    // Force a reflow so that the .show class transition runs
+    // trigger CSS animation
     requestAnimationFrame(() => note.classList.add('show'));
   
-    // After `duration`, fade out then remove
+    // auto-remove after duration
     setTimeout(() => {
       note.classList.remove('show');
       note.addEventListener(
         'transitionend',
-        () => {
-          note.remove();
-        },
+        () => note.remove(),
         { once: true }
       );
     }, duration);

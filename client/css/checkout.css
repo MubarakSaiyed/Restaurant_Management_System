@@ -1,0 +1,31 @@
+/* client/css/checkout.css */
+
+body {
+    background-color: #f8f9fa;
+  }
+  
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .card {
+    border: none;
+  }
+  
+  #payment-element {
+    padding: .75rem;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    background: #fff;
+  }
+  
+  #submit {
+    font-size: 1.1rem;
+  }
+  
+  #error-message {
+    min-height: 1.5em;
+    color: #dc3545; /* bootstrap danger */
+  }
+  

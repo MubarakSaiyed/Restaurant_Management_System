@@ -2,30 +2,48 @@
 import { DataTypes } from 'sequelize';
 import sequelize      from '../config/db.js';
 
-const Staff = sequelize.define('Staff', {
-  name: {
-    type:      DataTypes.STRING,
-    allowNull: false
+const Staff = sequelize.define(
+  'Staff',
+  {
+    id: {
+      type:          DataTypes.INTEGER,
+      primaryKey:    true,
+      autoIncrement: true
+    },
+    name: {
+      type:      DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type:      DataTypes.STRING,
+      allowNull: false,
+      validate:  { isEmail: true }
+    },
+    phone: {
+      type:      DataTypes.STRING,
+      allowNull: false
+    },
+    role: {
+      type:      DataTypes.ENUM('staff', 'admin'),
+      allowNull: false
+    },
+    shiftStart: {
+      type:      DataTypes.TIME,
+      allowNull: true
+    },
+    shiftEnd: {
+      type:      DataTypes.TIME,
+      allowNull: true
+    },
+    wage: {
+      type:      DataTypes.FLOAT,
+      allowNull: true
+    }
   },
-  role: {
-    type:      DataTypes.STRING,
-    allowNull: false
-  },
-  shiftStart: {
-    type:      DataTypes.TIME,
-    allowNull: false
-  },
-  shiftEnd: {
-    type:      DataTypes.TIME,
-    allowNull: false
-  },
-  wage: {
-    type:      DataTypes.FLOAT,
-    allowNull: false
+  {
+    tableName:  'staff',
+    timestamps: false  // ← don't expect createdAt/updatedAt columns
   }
-}, {
-  tableName:  'staff',
-  timestamps: true
-});
+);
 
 export default Staff;

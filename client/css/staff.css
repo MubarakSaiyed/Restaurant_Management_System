@@ -1,0 +1,239 @@
+/* ==================================================
+   Staff Page – Glassmorphism (5px blur)
+   ================================================== */
+
+/* 0) Full-page background + overlay */
+body {
+    background: url('../images/staffBG.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    z-index: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+  }
+  
+  /* 1) Main container & title */
+  main.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .page-title {
+    color: var(--nav-text);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* 2) Two-column layout */
+  .content-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 768px) {
+    .content-grid {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  
+  /* 3) Glass cards: form & list panels */
+  .card {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  .manage-card h2,
+  .list-card h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--nav-bg);
+    padding-bottom: 0.25rem;
+    color: var(--nav-bg);
+  }
+  
+  /* pop-up on hover */
+  .manage-card:hover,
+  .list-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+  }
+  
+  /* 4) Form styling (inside glass card) */
+  #staffForm .form-group {
+    margin-bottom: 1.25rem;
+  }
+  #staffForm label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  #staffForm input,
+  #staffForm select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.8);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #staffForm input:focus,
+  #staffForm select:focus {
+    border-color: var(--nav-bg);
+    box-shadow: 0 0 0 3px rgba(78, 52, 46, 0.2);
+    outline: none;
+  }
+  .btn-submit {
+    background-color: var(--nav-bg);
+    color: var(--nav-text);
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .btn-submit:hover {
+    background-color: var(--nav-hover);
+  }
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    min-height: 1em;
+    margin-top: 0.25rem;
+  }
+  
+  /* 5) Table styling (inside glass card) */
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+  #staffTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+  }
+  #staffTable thead {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: var(--nav-bg);
+  }
+  #staffTable th,
+  #staffTable td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  #staffTable tbody tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.1);
+  }
+  #staffTable tbody tr:hover {
+    background-color: rgba(255,255,255,0.2);
+  }
+  
+  /* 6) Action buttons */
+  #staffTable button {
+    background-color: var(--nav-bg);
+    color: var(--nav-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  #staffTable button:hover {
+    background-color: var(--nav-hover);
+    transform: translateY(-2px);
+  }
+  
+  /* 7) Responsive tweaks */
+  @media (max-width: 576px) {
+    .manage-card,
+    .list-card {
+      padding: 1rem;
+    }
+    .page-title {
+      font-size: 2rem;
+    }
+  }
+  /* 7) Schedule calendar styling */
+.schedule-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.schedule-calendar {
+  display: grid;
+  grid-template-columns: 100px repeat(7, 1fr);
+  gap: 1px;
+  background: #ccc;
+}
+.schedule-calendar .header {
+  background: #6D4C41;
+  color: #fff;
+  padding: 0.5rem;
+  text-align: center;
+}
+.schedule-calendar .blank {
+  background: transparent;
+}
+.schedule-calendar .cell {
+  background: #f9f9f9;
+  padding: 0.5rem;
+  min-height: 50px;
+  position: relative;
+}
+.schedule-calendar .time-label {
+  background: #eee;
+  font-weight: bold;
+}
+.shift-block {
+  background: rgba(109, 76, 65, 0.85);
+  color: #fff;
+  padding: 0.25rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 0.2rem;
+}
+.form-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+/* 9) Secondary button (Schedule & Payroll) */
+.btn-secondary {
+  background-color: rgba(255,255,255,0.2);
+  color: var(--nav-text);
+  border: 1px solid rgba(255,255,255,0.5);
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.btn-secondary:hover {
+  background-color: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+}

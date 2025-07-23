@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Checkout — De Sisha Café & Restro</title>
+
+  <!-- 1) Your Stripe publishable key -->
+  <meta name="stripe-publishable-key" content="pk_test_51RknkHI1YaVonhYuivHODBfAfFLYdSGVf96eWb6KExEQ1VPax0PXAmFQEF4DVkLylL9d3XzmjNSWxHR4oyvHPWPF00L8hRSjVI">
+
+  <!-- 2) Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoYz1HIcje39Wm4+ENe1ZRYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous"
+  />
+
+  <!-- 3) Optional base styles -->
+  <link rel="stylesheet" href="css/style.css"/>
+
+  <!-- 4) Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="bg-light">
+
+  <!-- SITE HEADER -->
+  <header class="site-header bg-white border-bottom py-2">
+    <div class="container nav-container">
+      <h1 class="logo mb-0">De Sisha Café &amp; Restro</h1>
+    </div>
+  </header>
+
+  <!-- CHECKOUT FORM -->
+  <main class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2 class="text-center mb-4">Complete Your Payment</h2>
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <!-- NEW: display total -->
+            <p class="text-center h5 mb-3">
+              Total: NPR <span id="checkout-total">0.00</span>
+            </p>
+
+            <form id="payment-form" class="d-flex flex-column">
+              <div id="payment-element" class="mb-3"></div>
+              <button id="submit" class="btn btn-primary mb-2">Pay Now</button>
+              <div id="error-message" role="alert" class="text-danger"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- YOUR CHECKOUT LOGIC -->
+  <script type="module" src="js/checkout.js"></script>
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p class="footer-quote">
+        “We don’t just serve food—we plate up moments that linger long after the last bite.”
+      </p>
+      <small class="footer-copy">&copy; 2025 De Sisha Café & Restro. All rights reserved.</small>
+    </div>
+  </footer>
+</body>
+</html>

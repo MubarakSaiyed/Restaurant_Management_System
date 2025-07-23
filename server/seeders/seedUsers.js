@@ -2,31 +2,46 @@
 
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import User from '../models/User.js';  // make sure this path is correct
+import User from '../models/User.js';
 
-// Load environment variables (so that models/db.js will see them too)
 dotenv.config();
 
 async function seed() {
-  // Ensure the users table exists without dropping existing data
   await User.sync({ force: false });
 
-  const email = 'customer@gmail.com';
-  const existing = await User.findOne({ where: { email } });
-  if (existing) {
-    console.log('↩️  Customer already exists');
-    process.exit(0);
+  const users = [
+    {
+      name:     'Admin User',
+      email:    'admin@gmail.com',
+      password: 'admin123',
+      role:     'admin'
+    },
+    {
+      name:     'Demo Customer',
+      email:    'customer@gmail.com',
+      password: '123456',
+      role:     'customer'
+    }
+  ];
+
+  for (const u of users) {
+    const existing = await User.findOne({ where: { email: u.email } });
+    if (existing) {
+      console.log(`↩️  ${u.role} (${u.email}) already exists`);
+      continue;
+    }
+
+    const hash = await bcrypt.hash(u.password, 10);
+    await User.create({
+      name:     u.name,
+      email:    u.email,
+      password: hash,
+      role:     u.role
+    });
+
+    console.log(`✅  Seeded ${u.role}: ${u.email} / ${u.password}`);
   }
 
-  const hash = await bcrypt.hash('123456', 10);
-  await User.create({
-    name:     'Demo Customer',
-    email,
-    password: hash,
-    role:     'customer'
-  });
-
-  console.log('✅  Seeded customer user:', email, '/ 123456');
   process.exit(0);
 }
 

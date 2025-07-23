@@ -2,94 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>All Reservations</title>
+  <title>All Reservations — De Sisha Cafe &amp; Restro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/reservations.css" />
 </head>
 <body>
-  <nav>
-    <a href="menu.html">Menu</a> |
-    <a href="reservations.html">Reservations</a> |
-    <a href="book.html">Book Table</a> |
-    <a href="staff.html">Staff</a> |
-    <button id="logoutBtn">Log Out</button>
-  </nav>
+  <!-- NAVBAR -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <h1 class="logo">De Sisha Café &amp; Restro</h1>
+      <nav class="site-nav">
+        <a href="menu.html"             class="nav-link">Menu</a>
+        <a href="cart.html"             class="nav-link">Cart</a>
+        <a href="orders.html"           class="nav-link">My Orders</a>
+        <a href="reservations.html"     class="nav-link" id="nav-admin-res">All Reservations</a>
+        <a href="reservation.html"      class="nav-link">Book Table</a>
+        <a href="seating.html"          class="nav-link">Seating Chart</a>
+        <a href="staff.html"            class="nav-link" id="nav-admin-staff">Staff</a>
+        <a href="inventory.html"        class="nav-link" id="nav-admin-inv">Inventory</a>
+        <a href="reports.html"          class="nav-link" id="nav-reports">Reports</a>
+        <a href="feedback-loyalty.html" class="nav-link" id="nav-feedback">Feedback &amp; Loyalty</a>
+        <div class="auth-links">
+          <a id="loginLink" href="login.html"  class="btn-link">Log In</a>
+          <button id="logoutBtn" class="btn-link hidden">Log Out</button>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-  <div id="notification" class="hidden"></div>
-  <h1>All Reservations</h1>
+  <!-- NOTIFICATIONS -->
+  <div id="notification"></div>
 
-  <!-- admin-only -->
-  <div id="adminUI">
-    <form id="resForm" novalidate>
-      <div class="form-group">
-        <label for="allres-name">Name</label>
-        <input id="allres-name" name="name" placeholder="Your Name" required />
-        <div class="error-message" data-for="allres-name"></div>
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    <h2 class="page-title">All Reservations</h2>
+    <section class="hero">
+      <p>Manage all your table bookings in one place.</p>
+    </section>
+
+    <section class="res-card" id="reservationsSection">
+      <div class="res-table-wrapper">
+        <table id="reservationsTable">
+          <thead>
+            <tr>
+              <th>Name</th><th>Email</th><th>Phone</th>
+              <th>Date</th><th>Time</th><th>Party Size</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
+    </section>
+  </main>
 
-      <div class="form-group">
-        <label for="allres-email">Email</label>
-        <input id="allres-email" type="email" name="email" placeholder="Your Email" required />
-        <div class="error-message" data-for="allres-email"></div>
-      </div>
-
-      <div class="form-group">
-        <label for="allres-phone">Phone</label>
-        <input id="allres-phone" name="phone" placeholder="Your Phone" required />
-        <div class="error-message" data-for="allres-phone"></div>
-      </div>
-
-      <div class="form-group">
-        <label for="allres-date">Date</label>
-        <input id="allres-date" type="date" name="date" required />
-        <div class="error-message" data-for="allres-date"></div>
-      </div>
-
-      <div class="form-group">
-        <label for="allres-time">Time</label>
-        <input id="allres-time" type="time" name="time" required />
-        <div class="error-message" data-for="allres-time"></div>
-      </div>
-
-      <div class="form-group">
-        <label for="allres-partySize">Party Size</label>
-        <input id="allres-partySize" name="partySize" type="number" placeholder="Party Size" required />
-        <div class="error-message" data-for="allres-partySize"></div>
-      </div>
-
-      <button type="submit">Reserve</button>
-    </form>
-  </div>
-
-  <table id="reservationsTable" border="1">
-    <thead>
-      <tr>
-        <th>Name</th><th>Email</th><th>Phone</th>
-        <th>Date</th><th>Time</th><th>Party Size</th><th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
+  <!-- SCRIPTS -->
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/notifier.js"></script>
+  <script type="module" src="js/validator.js"></script>
   <script type="module" src="js/reservations.js"></script>
-
-  <script type="module">
-    import { getUserRole } from './js/api.js';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const role = getUserRole();
-      if (role !== 'admin') {
-        document.querySelector('nav a[href="staff.html"]').style.display = 'none';
-        document.getElementById('adminUI').style.display = 'none';
-      }
-
-      document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('role');
-        window.location.href = 'login.html';
-      });
-    });
+  <script>
+    const role = localStorage.getItem('role') || 'guest';
+    if (role !== 'admin') {
+      document.getElementById('nav-admin-res')?.classList.add('hidden');
+      document.getElementById('nav-admin-staff')?.classList.add('hidden');
+      document.getElementById('nav-admin-inv')?.classList.add('hidden');  
+    }
   </script>
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p class="footer-quote">
+        “We don’t just serve food—we plate up moments that linger long after the last bite.”
+      </p>
+      <small class="footer-copy">&copy; 2025 De Sisha Café & Restro. All rights reserved.</small>
+    </div>
+  </footer>
 </body>
 </html>

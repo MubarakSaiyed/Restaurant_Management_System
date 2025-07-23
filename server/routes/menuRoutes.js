@@ -1,25 +1,58 @@
 import express from 'express';
+import multer  from 'multer';
+import path    from 'path';
+import { fileURLToPath } from 'url';
+
 import {
   getMenus,
   addMenu,
   updateMenu,
   deleteMenu
 } from '../controllers/menuController.js';
-import { requireAuth } from '../middleware/requireAuth.js';
-import { requireAdmin } from '../middleware/requireAdmin.js';
+import { requireAuth, requireAdmin } from '../middleware/requireAuth.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, '../uploads'),
+  filename:    (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
+  }
+});
+const upload = multer({ storage });
 
 const router = express.Router();
 
-// GET /api/menu      ← any authenticated user
-router.get('/', requireAuth, getMenus);
+// PUBLIC: anyone can read the menu
+router.get('/', getMenus);
 
-// POST /api/menu     ← only admins
-router.post('/', requireAuth, requireAdmin, addMenu);
+// ADMIN ONLY: create a new menu item (with optional image)
+router.post(
+  '/',
+  requireAuth,
+  requireAdmin,
+  upload.single('image'),
+  addMenu
+);
 
-// PUT /api/menu/:id  ← only admins
-router.put('/:id', requireAuth, requireAdmin, updateMenu);
+// ADMIN ONLY: update a menu item (with optional new image)
+router.put(
+  '/:id',
+  requireAuth,
+  requireAdmin,
+  upload.single('image'),
+  updateMenu
+);
 
-// DELETE /api/menu/:id ← only admins
-router.delete('/:id', requireAuth, requireAdmin, deleteMenu);
+// ADMIN ONLY: delete a menu item
+router.delete(
+  '/:id',
+  requireAuth,
+  requireAdmin,
+  deleteMenu
+);
 
 export default router;

@@ -1,0 +1,77 @@
+/* staff-schedule.css */
+
+/* calendar grid */
+.schedule-calendar {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    border: 1px solid var(--nav-bg);
+    font-size: 0.85rem;
+  }
+  
+  /* header cells */
+  .schedule-calendar .header {
+    background: var(--nav-bg);
+    color: var(--nav-text);
+    padding: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+  }
+  .schedule-calendar .header.blank {
+    background: #eee;
+    border-right: 1px solid #ddd;
+  }
+  
+  /* time & data cells */
+  .schedule-calendar .cell {
+    min-height: 40px;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+  }
+  .schedule-calendar .time-label {
+    background: #f7f7f7;
+    padding: 0.25rem;
+    text-align: right;
+    color: #555;
+  }
+  
+  /* shift block display */
+  .shift-block {
+    position: absolute;
+    top: 2px; left: 2px; right: 2px; bottom: 2px;
+    background: rgba(202,127,77,0.8);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    font-size: 0.75rem;
+  }
+  
+  /* controls above calendar */
+  .schedule-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  #week-range {
+    font-weight: bold;
+    color: var(--nav-bg);
+  }
+  
+  /* shift‐assignment form layout */
+  #shiftForm .form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  #shiftForm .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  

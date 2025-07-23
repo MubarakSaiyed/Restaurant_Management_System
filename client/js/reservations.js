@@ -1,27 +1,72 @@
 // client/js/reservations.js
-import { authedFetch }      from './api.js';
-import { showNotification } from './notifier.js';
-import { validateForm }     from './validator.js';
 
-if (!localStorage.getItem('jwt')) {
-  window.location.href = 'login.html';
+import { authedFetch, getUserRole } from './api.js';
+import { showNotification }         from './notifier.js';
+
+const loginLink           = document.getElementById('loginLink');
+const logoutBtn           = document.getElementById('logoutBtn');
+const allResLink          = document.getElementById('allResLink');
+const reservationsSection = document.getElementById('reservationsSection');
+const tbody               = document.querySelector('#reservationsTable tbody');
+
+const role = getUserRole() || 'guest';
+
+// ── NAV / AUTH TOGGLE ───────────────────────────────────
+if (role === 'guest') {
+  loginLink.classList.remove('hidden');
+  logoutBtn.classList.add('hidden');
+} else {
+  loginLink.classList.add('hidden');
+  logoutBtn.classList.remove('hidden');
+}
+logoutBtn.onclick = () => {
+  localStorage.clear();
+  window.location.href = 'menu.html';
+};
+
+// ── ROLE CHECK: only admin sees this page ──────────────
+if (role !== 'admin') {
+  allResLink?.classList.add('hidden');
+  reservationsSection?.classList.add('hidden');
+} else {
+  document.addEventListener('DOMContentLoaded', loadReservations);
 }
 
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('jwt');
-  window.location.href = 'login.html';
-});
-
+/**
+ * Fetch & render all reservations (admin only)
+ */
 async function loadReservations() {
+  // show loading row
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="7" style="text-align:center; padding:1rem;">
+        Loading…
+      </td>
+    </tr>
+  `;
+
   try {
-    const reservations = await authedFetch('/reservations');
+    // 1) fetch raw response
+    const res  = await authedFetch('/reservations', { method: 'GET' });
+    // 2) parse JSON
+    const list = await res.json();
 
-    const tbody = document
-      .getElementById('reservationsTable')
-      .querySelector('tbody');
+    // 3) guard array
+    if (!Array.isArray(list)) {
+      throw new Error(list.message || 'Unexpected response');
+    }
+
+    // 4) render or empty state
     tbody.innerHTML = '';
+    if (list.length === 0) {
+      const tr = tbody.insertRow();
+      const td = tr.insertCell();
+      td.colSpan = 7;
+      td.textContent = 'No reservations found.';
+      return;
+    }
 
-    reservations.forEach(r => {
+    list.forEach(r => {
       const row = tbody.insertRow();
       row.innerHTML = `
         <td>${r.name}</td>
@@ -31,64 +76,33 @@ async function loadReservations() {
         <td>${r.time}</td>
         <td>${r.partySize}</td>
         <td>
-          <button class="delete-btn" data-id="${r.id}">Delete</button>
+          <button class="delete-btn" data-id="${r.id}">
+            Delete
+          </button>
         </td>
       `;
     });
 
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.id;
+    // 5) attach delete handlers
+    tbody.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = async () => {
         if (!confirm('Delete this reservation?')) return;
         try {
-          await authedFetch(`/reservations/${id}`, { method: 'DELETE' });
-          showNotification('Reservation deleted', 'success');
-          await loadReservations();
+          await authedFetch(`/reservations/${btn.dataset.id}`, {
+            method: 'DELETE'
+          });
+          showNotification('Reservation deleted','success');
+          loadReservations();
         } catch (err) {
-          console.error('Delete error:', err);
-          showNotification('Failed to delete: ' + err.message, 'error');
+          console.error('Delete failed:', err);
+          showNotification('Delete failed: ' + err.message,'error');
         }
-      });
+      };
     });
 
   } catch (err) {
     console.error('❌ loadReservations error:', err);
-    showNotification('Could not load reservations: ' + err.message, 'error');
+    tbody.innerHTML = ''; // clear loading
+    showNotification('Could not load reservations: ' + err.message,'error');
   }
 }
-
-const resForm = document.getElementById('resForm');
-if (resForm) {
-  resForm.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    // validate
-    const errors = validateForm(resForm);
-    if (Object.keys(errors).length) return;
-
-    const fd = new FormData(resForm);
-    const payload = {
-      name:      fd.get('name'),
-      email:     fd.get('email'),
-      phone:     fd.get('phone'),
-      date:      fd.get('date'),
-      time:      fd.get('time'),
-      partySize: parseInt(fd.get('partySize'), 10),
-    };
-
-    try {
-      await authedFetch('/reservations', {
-        method: 'POST',
-        body:   JSON.stringify(payload),
-      });
-      showNotification('Table booked', 'success');
-      resForm.reset();
-      await loadReservations();
-    } catch (err) {
-      console.error('Booking error:', err);
-      showNotification('Could not book table: ' + err.message, 'error');
-    }
-  });
-}
-
-document.addEventListener('DOMContentLoaded', loadReservations);

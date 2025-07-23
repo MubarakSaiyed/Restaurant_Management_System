@@ -1,0 +1,126 @@
+/* ==================================================
+   All Reservations Page – Glassmorphism Styles
+   ================================================== */
+
+/* 1) Full‐page background + overlay */
+body {
+    background: url('../images/Sitting.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    z-index: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* subtle dark tint so content pops */
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  }
+  
+  /* 2) Main container & page title */
+  main.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .page-title {
+    color: var(--nav-text);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* 3) Hero banner – glass */
+  .hero {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(10px);
+    color: var(--nav-text);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  }
+  .hero p {
+    font-size: 1.125rem;
+    margin: 0;
+  }
+  
+  /* 4) Glass card for table */
+  .res-card {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  /* Pop‐up on hover */
+  .res-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    z-index: 2;
+  }
+  
+  /* 5) Table wrapper & styling */
+  .res-table-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+  #reservationsTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.25);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #reservationsTable thead {
+    background-color: rgba(255,255,255,0.35);
+    color: var(--nav-text);
+  }
+  #reservationsTable th,
+  #reservationsTable td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  #reservationsTable tbody tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.15);
+  }
+  #reservationsTable tbody tr:hover {
+    background-color: rgba(255,255,255,0.25);
+  }
+  
+  /* 6) Delete button styling */
+  #reservationsTable .delete-btn {
+    background-color: rgba(255,255,255,0.3);
+    color: var(--nav-bg);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  #reservationsTable .delete-btn:hover {
+    background-color: rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+  }
+  
+  /* 7) Responsive tweaks */
+  @media (max-width: 768px) {
+    .page-title { font-size: 2rem; }
+    .hero p    { font-size: 1rem; }
+    #reservationsTable th,
+    #reservationsTable td {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+  }
+  

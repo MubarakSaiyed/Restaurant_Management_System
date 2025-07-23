@@ -1,0 +1,154 @@
+/* login.css — must come after style.css */
+
+/* 1) Full‐screen logo background (entire logo visible, covers viewport) */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+      url('../images/logo.jpg') no-repeat fixed center center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    color: #fff;
+  }
+  
+  /* 2) Container for quote + form */
+  .login-container {
+    display: flex;
+    max-width: 900px;
+    width: 100%;
+    margin: 2rem;
+    gap: 2rem;
+  }
+  
+  /* 3) Quote panel */
+  .login-quote {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  }
+  
+  /* 4) Glassy form card */
+  .login-card {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  .login-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+  }
+  
+  /* 4a) Blurred watermark inside the card */
+  .login-card::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 200px; height: 200px;
+    background: url('../images/logo.jpg') center/contain no-repeat;
+    opacity: 0.15;
+    transform: translate(-50%, -50%);
+    filter: blur(8px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* ensure children render above watermark */
+  .login-card > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* 5) Logo inside the card */
+  .login-logo {
+    max-width: 100px;
+    margin-bottom: 1rem;
+  }
+  
+  /* 6) Form heading and inputs */
+  .login-card h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  }
+  .login-card .form-group {
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+  .login-card label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #eee;
+  }
+  .login-card input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.8);
+    font-size: 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .login-card input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139,69,46,0.3);
+  }
+  
+  /* 7) Button */
+  .login-card .btn-primary {
+    width: 100%;
+    padding: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    background: #b8814e;
+    color: #fff;
+    font-size: 1.05rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: background 0.2s, box-shadow 0.2s;
+    margin-top: 0.5rem;
+  }
+  .login-card .btn-primary:hover {
+    background: #c18741;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  }
+  
+  /* 8) Error messages */
+  .error-message {
+    color: #ff7675;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1em;
+  }
+  
+  /* 9) Responsive tweaks */
+  @media (max-width: 768px) {
+    .login-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    .login-quote {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+  }
+  

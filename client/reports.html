@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Reports & Analytics — De Sisha Café & Restro</title>
+
+  <!-- Core styles + reports-specific overrides -->
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/reports.css"/>
+
+  <!-- Chart.js for your graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- HEADER / NAV -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <h1 class="logo">De Sisha Café &amp; Restro</h1>
+      <nav class="site-nav">
+        <a href="menu.html"             class="nav-link">Menu</a>
+        <a href="cart.html"             class="nav-link">Cart</a>
+        <a href="orders.html"           class="nav-link">My Orders</a>
+        <a href="reservations.html"     class="nav-link" id="nav-admin-res">All Reservations</a>
+        <a href="reservation.html"      class="nav-link">Book Table</a>
+        <a href="seating.html"          class="nav-link">Seating Chart</a>
+        <a href="staff.html"            class="nav-link" id="nav-admin-staff">Staff</a>
+        <a href="inventory.html"        class="nav-link" id="nav-admin-inv">Inventory</a>
+        <a href="reports.html"          class="nav-link active" id="nav-reports">Reports</a>
+        <a href="feedback-loyalty.html" class="nav-link" id="nav-feedback">Feedback &amp; Loyalty</a>
+        <div class="auth-links">
+          <a id="loginLink" href="login.html" class="btn-link">Log In</a>
+          <button id="logoutBtn" class="btn-link hidden">Log Out</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="notification"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="container reports">
+    <h2 class="reports-title">Reports &amp; Analytics</h2>
+
+    <section class="report-card">
+      <h3>Sales (last 7 days)</h3>
+      <canvas id="chart-sales"></canvas>
+    </section>
+
+    <section class="report-card">
+      <h3>Inventory Trends (top 10)</h3>
+      <canvas id="chart-inventory"></canvas>
+    </section>
+
+    <section class="report-card">
+      <h3>Staff KPIs</h3>
+      <canvas id="chart-staff"></canvas>
+    </section>
+  </main>
+
+  <!-- Your reporting logic -->
+  <script type="module" src="js/reports.js"></script>
+  <script>
+    // Highlight the current nav link
+    document.querySelectorAll('.site-nav .nav-link').forEach(a => {
+      if (a.href.endsWith(location.pathname.split('/').pop())) {
+        a.classList.add('active');
+      }
+    });
+
+    // Hide admin-only links (including Reports) for non-admins
+    const role = localStorage.getItem('role') || 'guest';
+    ['nav-admin-res','nav-admin-staff','nav-admin-inv','nav-reports']
+      .forEach(id => document.getElementById(id)?.classList.toggle('hidden', role !== 'admin'));
+
+    // Toggle Log In / Log Out
+    if (role === 'guest') {
+      document.getElementById('loginLink').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+    } else {
+      document.getElementById('loginLink').classList.add('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+    }
+    document.getElementById('logoutBtn').onclick = () => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    };
+  </script>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p class="footer-quote">
+        “We don’t just serve food—we plate up moments that linger long after the last bite.”
+      </p>
+      <small class="footer-copy">&copy; 2025 De Sisha Café & Restro. All rights reserved.</small>
+    </div>
+  </footer>
+</body>
+</html>

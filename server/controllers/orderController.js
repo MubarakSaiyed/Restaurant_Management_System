@@ -1,13 +1,20 @@
 // server/controllers/orderController.js
-import sequelize    from '../config/db.js';
-import Order        from '../models/order.js';
-import OrderItem    from '../models/orderItem.js';
-import User         from '../models/User.js';
-import Menu         from '../models/menu.js';
+import { sequelize, Order, OrderItem, User, Menu } from '../models/index.js';
+
+const VALID_STATUSES = [
+  'new',
+  'processing',     // ← added
+  'paid',           // ← added
+  'preparing',
+  'in_progress',
+  'ready',
+  'on_the_way',
+  'served',
+  'cancelled'
+];
 
 /**
- * GET /api/orders
- * (admin only)
+ * GET /api/orders      — Admin & staff only
  */
 export async function getAllOrders(req, res) {
   try {
@@ -17,10 +24,10 @@ export async function getAllOrders(req, res) {
         {
           model: OrderItem,
           as:    'items',
-          include: [{ model: Menu, attributes: ['id','name','price'] }]
+          include: [{ model: Menu, as: 'Menu', attributes: ['id','name','price'] }]
         }
       ],
-      order: [['createdAt','DESC']]
+      order: [['id','DESC']]
     });
     return res.json(orders);
   } catch (err) {
@@ -30,7 +37,7 @@ export async function getAllOrders(req, res) {
 }
 
 /**
- * GET /api/orders/my
+ * GET /api/orders/my   — Customer’s own orders
  */
 export async function getMyOrders(req, res) {
   try {
@@ -41,10 +48,10 @@ export async function getMyOrders(req, res) {
         {
           model: OrderItem,
           as:    'items',
-          include: [{ model: Menu, attributes: ['id','name','price'] }]
+          include: [{ model: Menu, as: 'Menu', attributes: ['id','name','price'] }]
         }
       ],
-      order: [['createdAt','DESC']]
+      order: [['id','DESC']]
     });
     return res.json(orders);
   } catch (err) {
@@ -54,58 +61,81 @@ export async function getMyOrders(req, res) {
 }
 
 /**
- * POST /api/orders
+ * POST /api/orders     — Place new order (checks & decrements stock)
  */
 export async function createOrder(req, res) {
   const { items } = req.body;
   if (!Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ message: 'Must provide an items array' });
+    return res.status(400).json({ message: 'Must provide a non-empty items array' });
   }
 
   const t = await sequelize.transaction();
   try {
-    // 1) create base order
+    // 1) Load & lock referenced menu items
+    const menuIds = items.map(i => i.menuId);
+    const menus   = await Menu.findAll({
+      where:       { id: menuIds },
+      transaction: t,
+      lock:        t.LOCK.UPDATE,
+    });
+
+    // 2) Validate stock & decrement
+    for (const { menuId, quantity } of items) {
+      const menu = menus.find(m => m.id === menuId);
+      if (!menu) throw new Error(`Menu item ${menuId} not found`);
+      if (quantity > menu.stock) {
+        return res
+          .status(400)
+          .json({ message: `Only ${menu.stock} "${menu.name}" left in stock` });
+      }
+      menu.stock -= quantity;
+      await menu.save({ transaction: t });
+    }
+
+    // 3) Create the order
     const order = await Order.create(
       { userId: req.user.id, status: 'new' },
       { transaction: t }
     );
 
-    // 2) bulk‐insert line‐items
+    // 4) Bulk‐create items
     const toCreate = items.map(({ menuId, quantity }) => ({
-      orderId:  order.id,
+      orderId: order.id,
       menuId,
       quantity
     }));
     await OrderItem.bulkCreate(toCreate, { transaction: t });
 
-    // 3) commit & reload
-    await t.commit();
+    // 5) Reload full order
     const fullOrder = await Order.findByPk(order.id, {
       include: [
-        { model: User, as: 'customer', attributes: ['id','name','email'] },
+        { model: User,      as: 'customer', attributes: ['id','name','email'] },
         {
           model: OrderItem,
           as:    'items',
-          include: [{ model: Menu, attributes: ['id','name','price'] }]
+          include: [{ model: Menu, as: 'Menu', attributes: ['id','name','price'] }]
         }
-      ]
+      ],
+      transaction: t
     });
 
+    await t.commit();
     return res.status(201).json(fullOrder);
+
   } catch (err) {
     await t.rollback();
     console.error('❌ createOrder error:', err);
-    return res.status(500).json({ message: 'Could not create order' });
+    const status = err.message.startsWith('Only') ? 400 : 500;
+    return res.status(status).json({ message: err.message });
   }
 }
 
 /**
- * PUT /api/orders/:id
+ * PUT /api/orders/:id  — Update order status (admin/staff only)
  */
 export async function updateOrderStatus(req, res) {
   const { status } = req.body;
-  const valid     = ['new','in_progress','ready','served'];
-  if (!valid.includes(status)) {
+  if (!VALID_STATUSES.includes(status)) {
     return res.status(400).json({ message: 'Invalid status value' });
   }
 
@@ -117,20 +147,52 @@ export async function updateOrderStatus(req, res) {
     order.status = status;
     await order.save();
 
-    // return updated with associations
     const updated = await Order.findByPk(order.id, {
       include: [
         { model: User, as: 'customer', attributes: ['id','name','email'] },
         {
           model: OrderItem,
           as:    'items',
-          include: [{ model: Menu, attributes: ['id','name','price'] }]
+          include: [{ model: Menu, as: 'Menu', attributes: ['id','name','price'] }]
         }
       ]
     });
     return res.json(updated);
+
   } catch (err) {
     console.error('❌ updateOrderStatus error:', err);
     return res.status(500).json({ message: 'Could not update order status' });
+  }
+}
+
+/**
+ * DELETE /api/orders/:id — Cancel an order
+ */
+export async function cancelOrder(req, res) {
+  try {
+    const order = await Order.findByPk(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // only admins/staff or the owning customer may cancel
+    const isStaff = req.user.role === 'admin' || req.user.role === 'staff';
+    if (!isStaff && order.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    // only new orders can be cancelled
+    if (order.status !== 'new') {
+      return res
+        .status(400)
+        .json({ message: 'Only new orders can be cancelled' });
+    }
+
+    await order.destroy();
+    return res.json({ message: `Order #${order.id} cancelled` });
+
+  } catch (err) {
+    console.error('❌ cancelOrder error:', err);
+    return res.status(500).json({ message: 'Could not cancel order' });
   }
 }

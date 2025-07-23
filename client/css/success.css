@@ -1,0 +1,81 @@
+/* success.css */
+
+/* full-height layout */
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  /* center the card */
+  .success-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* the card */
+  .thank-you-card {
+    background: #fff;
+    padding: 2rem;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  /* checkmark icon */
+  .thank-you-card svg {
+    width: 80px;
+    height: 80px;
+    color: #28a745;
+    margin-bottom: 1rem;
+  }
+  
+  /* heading */
+  .thank-you-card h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* message text */
+  .thank-you-card p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* button */
+  .btn-primary {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    color: #007bff;
+    background: transparent;
+    border: 2px solid #007bff;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .btn-primary:hover {
+    background: #007bff;
+    color: #fff;
+  }
+  
+  /* footer */
+  .site-footer {
+    background: #f5f5f5;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
