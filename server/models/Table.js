@@ -32,7 +32,7 @@ const Table = sequelize.define('Table', {
     defaultValue: 'available',
   }
 }, {
-  tableName: 'tables',     
+  tableName: 'table',     
   timestamps: false        
 });
 

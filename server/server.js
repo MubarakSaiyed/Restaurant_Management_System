@@ -74,6 +74,12 @@ app.use('/api/bills',        billRoutes);
 app.use('/api/shifts',       shiftRoutes);
 app.use('/api/users',        userRoutes);
 
+// Serve client/images as “/images/…”
+app.use(
+  '/images',
+  express.static(path.join(__dirname, '../client/images'))
+);
+
 // real‐time seating map (staff only)
 app.use('/api/seating',  seatingRoutes);
 
@@ -94,16 +100,9 @@ app.use((_, res) => res.status(404).json({ error: 'Not found' }));
 // H) Boot DB & start HTTP+WebSocket server
 ;(async () => {
   try {
-    console.log('ENV DB_NAME:  ', process.env.DB_NAME);
-    console.log('ENV DB_USER:  ', process.env.DB_USER);
-    console.log('ENV DB_PASS:  ', process.env.DB_PASSWORD ? '••••••••' : null);
-    console.log('ENV STRIPE_SK:', process.env.STRIPE_SECRET_KEY ? '••••••••' : null);
-
     await sequelize.authenticate();
     console.log('✅ Database connected');
-
-    // <-- this will add any new columns (e.g. TableId) automatically
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
     console.log('✅ Tables synced');
 
     httpServer.listen(PORT, () => {

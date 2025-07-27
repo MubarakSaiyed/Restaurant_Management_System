@@ -45,7 +45,7 @@ const Reservation = sequelize.define(
     TableId: {
       type:       DataTypes.INTEGER,
       allowNull:   true,                // must be nullable for ON DELETE SET NULL
-      references: { model: 'Tables', key: 'id' },
+      references: { model: 'table', key: 'id' },
       onUpdate:   'CASCADE',
       onDelete:   'SET NULL'
     }

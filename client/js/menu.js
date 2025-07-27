@@ -38,22 +38,13 @@ const role = getUserRole() || 'guest';
       if (Object.keys(errs).length) return;
 
       const fd = new FormData(addForm);
-
       try {
         let res;
         if (addForm.dataset.editId) {
-          // Edit existing
           const id = addForm.dataset.editId;
-          res = await authedFetch(`/menu/${id}`, {
-            method: 'PUT',
-            body:   fd
-          });
+          res = await authedFetch(`/menu/${id}`, { method: 'PUT',  body: fd });
         } else {
-          // Add new
-          res = await authedFetch('/menu', {
-            method: 'POST',
-            body:   fd
-          });
+          res = await authedFetch('/menu',    { method: 'POST', body: fd });
         }
 
         const body = await res.json();
@@ -100,12 +91,10 @@ async function loadMenu() {
       btn.className = 'filter-btn' + (cat==='All' ? ' active' : '');
       btn.textContent = cat;
       btn.onclick = () => {
-        document.querySelectorAll('.filter-btn')
-          .forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.menu-category').forEach(sec => {
-          sec.style.display = (cat==='All' || sec.dataset.category===cat)
-            ? '' : 'none';
+          sec.style.display = (cat==='All' || sec.dataset.category===cat) ? '' : 'none';
         });
       };
       filtersDiv.append(btn);
@@ -119,7 +108,7 @@ async function loadMenu() {
       sec.dataset.category = category;
 
       const h3 = document.createElement('h3');
-      h3.className = 'category-title';
+      h3.className   = 'category-title';
       h3.textContent = category;
       sec.append(h3);
 
@@ -127,7 +116,7 @@ async function loadMenu() {
       grid.className = 'menu-grid';
 
       list.forEach(item => {
-        const card = document.createElement('div');
+        const card    = document.createElement('div');
         card.className = 'card';
 
         const content = document.createElement('div');
@@ -143,21 +132,24 @@ async function loadMenu() {
           const f = item.name.replace(/\s+/g,'') + '.jpg';
           imgSrc = `/images/${f}`;
         }
+
+        // —— Inject an overlay and merge name+category in the header ——
         content.innerHTML = `
           <div class="dish-img-wrap">
             <img src="${imgSrc}"
                  alt="${item.name}"
                  class="dish-img"
                  onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
+            <span class="dish-name-overlay">${item.name}</span>
           </div>
-          <h4>${item.name}</h4>
-          <p class="text-sm">${item.category}</p>
+          <h4>${item.name} — ${item.category}</h4>
           <p class="text-lg">NPR ${item.price.toFixed(2)}</p>
           <span class="badge ${item.available ? 'available' : 'unavailable'}">
             ${item.available ? 'Available' : 'Unavailable'}
           </span>
         `;
 
+        // Actions (Add to cart, edit/delete)
         const actions = document.createElement('div');
         actions.className = 'card-actions';
 
@@ -171,9 +163,9 @@ async function loadMenu() {
           const found = cart.find(c=>c.menuId===item.id);
           if (found) found.quantity++;
           else cart.push({
-            menuId: item.id,
-            name:   item.name,
-            price:  item.price,
+            menuId:   item.id,
+            name:     item.name,
+            price:    item.price,
             quantity: 1
           });
           saveCart(cart);
@@ -185,8 +177,8 @@ async function loadMenu() {
         if (role==='admin') {
           const editBtn = document.createElement('button');
           editBtn.textContent = 'Edit';
-          editBtn.className = 'edit-btn';
-          editBtn.onclick   = () => startEdit(item);
+          editBtn.className   = 'edit-btn';
+          editBtn.onclick     = () => startEdit(item);
           actions.append(editBtn);
 
           const delBtn = document.createElement('button');
@@ -216,7 +208,7 @@ async function loadMenu() {
 async function deleteDish(id) {
   if (!confirm('Delete this dish?')) return;
   try {
-    const res = await authedFetch(`/menu/${id}`, { method: 'DELETE' });
+    const res  = await authedFetch(`/menu/${id}`, { method: 'DELETE' });
     const body = await res.json();
     if (!res.ok) throw new Error(body.message || 'Delete failed');
     showNotification('Dish deleted ✔️','success');
@@ -235,7 +227,7 @@ function startEdit(item) {
   addForm.elements.available.checked = item.available;
 
   addForm.dataset.editId = item.id;
-  adminUI.querySelector('h3').textContent = 'Edit Dish';
-  addForm.querySelector('button').textContent = 'Save Changes';
+  adminUI.querySelector('h3').textContent          = 'Edit Dish';
+  addForm.querySelector('button').textContent      = 'Save Changes';
   addForm.scrollIntoView({ behavior:'smooth' });
 }

@@ -1,8 +1,10 @@
+// client/js/seating.js
+
 import { authedFetch, getUserRole } from './api.js';
 
 // Grab our floorplan container
 const floor  = document.getElementById('floorplan');
-// Socket.IO (served by /socket.io/socket.io.js)
+// Initialize Socket.IO (same origin)
 const socket = io();
 // Could be 'guest' | 'staff' | 'admin'
 const role   = getUserRole() || 'guest';
@@ -33,7 +35,7 @@ function renderTables(tables) {
   tables.forEach(tbl => {
     // card container
     const el = document.createElement('div');
-    el.classList.add('table', tbl.status); 
+    el.className = `table ${tbl.status}`; 
     // tbl.status is one of 'available'|'reserved'|'occupied'
 
     // 1️⃣ Always show the table number
@@ -46,19 +48,19 @@ function renderTables(tables) {
       const select = document.createElement('select');
       ['available','reserved','occupied'].forEach(s => {
         const opt = document.createElement('option');
-        opt.value = s;
-        opt.text  = s[0].toUpperCase() + s.slice(1);
+        opt.value       = s;
+        opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
         if (s === tbl.status) opt.selected = true;
         select.appendChild(opt);
       });
-      select.onchange = async () => {
+      select.addEventListener('change', async () => {
         try {
           await updateStatus(tbl.id, select.value);
         } catch (err) {
           alert('Could not update status: ' + err.message);
-          select.value = tbl.status;
+          loadSeating(); // refresh to reset UI
         }
-      };
+      });
       el.appendChild(select);
 
     } else {
@@ -79,7 +81,7 @@ function renderTables(tables) {
  */
 async function loadSeating() {
   try {
-    const res = await fetch('/api/seating');
+    const res = await authedFetch('/seating');   // don't double‐prefix /api
     if (!res.ok) throw new Error('Could not load seating');
     const tables = await res.json();
     renderTables(tables);
