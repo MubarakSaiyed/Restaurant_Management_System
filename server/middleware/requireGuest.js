@@ -1,4 +1,3 @@
-// server/middleware/requireGuest.js
 export function requireGuest(req, res, next) {
   // try body → query → URL param
   const code = req.body.guestCode 

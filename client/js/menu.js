@@ -15,6 +15,7 @@ const filtersDiv    = document.getElementById('filters');
 const role = getUserRole() || 'guest';
 
 ;(async function init() {
+  
   // ── Toggle login/logout UI ─────────────────────────
   if (role === 'guest') {
     loginLink.classList.remove('hidden');

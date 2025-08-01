@@ -1,11 +1,7 @@
-// server/middleware/requireAuth.js
-
 import jwt from 'jsonwebtoken';
 
-/**
- * Protect routes by verifying a Bearer JWT.
- * On success, attaches payload ({ userId, role, iat, exp }) to req.user.
- */
+ //Protect routes by verifying a Bearer JWT.
+
 export function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {

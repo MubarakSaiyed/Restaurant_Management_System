@@ -151,4 +151,21 @@ body {
       margin-bottom: 2rem;
     }
   }
-  
+  /* Show‑password row: inline flex, better spacing */
+.show-password {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.show-password input[type="checkbox"] {
+  margin: 0;
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+.show-password label {
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+}

@@ -79,9 +79,9 @@ export const updateMenu = async (req, res) => {
   }
 };
 
-/**
- * DELETE /api/menu/:id
- */
+
+// DELETE /api/menu/:id
+ 
 export const deleteMenu = async (req, res) => {
   const { id } = req.params;
   try {
